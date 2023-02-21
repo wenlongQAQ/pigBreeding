@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>智慧养猪</title>
+		<link rel="stylesheet" type="text/css" href="css/index.css">
+	</head>
+	<body>
+		<!-- 总体 -->
+		<div id="main">
+			<!-- 头部 -->
+			<div id="top">
+				<!-- 头部左边 -->
+				<div class="top-left">					
+				</div>
+				<!-- 头部中间 -->
+				<div class="top-center">
+					<div class="top-title">
+						<p>智慧养猪可视化大屏中心</p>
+					</div>
+					<div class="top-gif"></div>
+				</div>
+				<!-- 头部右边 -->
+				<div class="top-right">
+					<div id="time"></div>
+				</div>
+			</div>
+			<!-- 中间装饰 -->
+			<div id="line">			
+			</div>
+			<!-- 中间 数据展示-->
+			<div id="center">
+				<!-- 导航栏 -->
+				<div class="center-left">
+					<!-- 导航栏标题 -->
+					<div class="center-left-titlebox">
+						<div class="center-left-title">
+							<p>功能导航</p>
+						</div>
+					</div>
+					<!-- 导航 -->
+					<div class="navigation">
+						<div class="control">
+							<div class="control-box">
+								<div class="control-picture"></div>
+								<div class="controltext">
+									<!-- ToDo -->
+									<a style="color:inherit;" href="www.baidu.com"><p>控制台</p></a>
+									<p style="font-size: 10%;">Control</p>
+								</div>
+							</div>
+						</div>
+						<div class="information">
+							<div class="information-box">
+								<div class="information-picture"></div>							
+							    <div class="informationtext">
+								    <a style="color:inherit;" href="www.baidu.com"><p>猪群信息管理</p></a>
+								    <p style="font-size: 10%;">Information Management</p>
+							    </div>
+						    </div>
+						</div>
+					</div>
+				</div>
+				<!-- 实时数据显示 -->
+				<div class="center-center">
+					<div class="center-center-titlebox">
+						<div class="center-center-title">
+							<p>环境曲线趋势图</p>
+						</div>
+					</div>
+			            <div class="chart1box">
+							<div  class=" chartcss" id="chart1"></div>
+						</div>
+				</div>
+				<!-- 警告 -->
+				<div class="center-right">
+					<div class="center-right-titlebox">
+						<div class="center-right-title">
+							<p>警告<i style="color: yellow;font-size: 25px; text-shadow: 0 0 .3rem yellow"><em>!</em></i></p>														
+						</div>	
+						</div>
+					<div class="warn">
+						<div class="warnbox">
+							<!-- To Do -->
+							<marquee style="height: 100%;" behavior="scroll"  loop=-1 scrolldelay="1" scrollamount="5" onmouseout="this.start();" onmouseover="this.stop();" direction="up">
+								<div v-for="item in menuList" :key="item.id">
+										<i class="iconfont" :class="item.icon"></i>
+										<span slot="title">{{item.name}}</span>
+								</div>
+							</marquee>
+							
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 底部 -->
+			<div id="bottom">
+				<div class="bottom-left">
+					<div class="bottom-left-titlebox">
+						<div class="bottom-left-title">
+							<p>实时天气情况</p>
+						</div>
+					</div>
+				</div>
+				<div class="bottom-center">
+					<div class="bottom-center-titlebox">
+						<div class="bottom-center-title">
+							<p>实时数据</p>
+						</div>						
+					</div>
+					<div class="data">
+						<div class="first">
+							<div class="first-left">
+								<div class="temperature-picture"></div>
+									<div class="temperature">
+										<b><p class="chinese">温度</p></b>
+										<!-- To Do -->
+										<p>20℃</p>
+									</div>
+							</div>
+							<div class="first-right">
+								<div class="water-picture"></div>
+									<div class="water">
+										<b><p class="chinese">湿度</p></b>
+										<!-- To Do -->	
+										<p>49%</p>
+										</div>
+							</div>								
+						</div>
+						<div class="second">
+							<div class="second-left">
+								<div class="oxygen-picture"></div>
+									<div class="oxygen">
+										<!-- To Do -->
+										<b><p class="chinese">氧气</p></b>
+										<p>21.5%</p></div>
+							</div>
+							<div class="second-right">			
+								<div class="CO2-picture"></div>
+									<div class="CO2">
+										<b><p class="chinese">二氧化碳</p></b>
+										<!-- To Do -->
+										<p>350ppm</p>
+									</div>
+							</div>					    
+						</div>
+						<div class="third">
+							<div class="third-left">
+								<div class="H2S-picture"></div>
+								    <div class="H2S">
+										<b><p class="chinese">硫化氢</p></b>
+										<!-- To Do -->
+										<p>1ppm</p>
+									</div>
+				            </div>
+							<div class="third-right">
+								<div class="NH3-picture"></div>
+									<div class="NH3">
+										<b><p class="chinese">氨气</p></b>
+									    <!-- To Do -->
+										<p>10ppm</p>
+									</div>
+						    </div>
+						</div>
+					</div>
+				</div>
+				<div class="bottom-right">
+					<div class="bottom-right-titlebox">
+					    <div class="bottom-right-title">
+						
+					    </div>	
+					</div>
+				</div>
+			</div>			
+		</div>
+		<script src="../assert/js/vue2.js"></script>
+		<link rel="stylesheet" href="../assert/element-ui/lib/theme-chalk/index.css">
+		<!-- 引入组件库 -->
+		<script src="../assert/element-ui/lib/index.js"></script>
+			<script src="js/jquery.min.js"></script>
+			<script src="js/echarts.min.js"></script>
+			<script src="js/echarts.js"> </script>
+			<script src="js/fontscroll.js"></script>
+			<script>
+					new Vue({
+					el: "#main",
+					data() {
+					return {
+					menuList: [
+				{
+					id: '2',
+					name: '设备管理',
+					url: 'deviceManage.html',
+					icon: 'el-icon-s-tools'
+				},
+				{
+					id: '3',
+					name: '定时任务',
+					url: 'scheduledTask.html',
+					icon: 'el-icon-time'
+				},{
+					id: '3',
+					name: '定时任务',
+					url: 'scheduledTask.html',
+					icon: 'el-icon-time'
+				},{
+					id: '3',
+					name: '定时任务',
+					url: 'scheduledTask.html',
+					icon: 'el-icon-time'
+				},{
+					id: '3',
+					name: '定时任务',
+					url: 'scheduledTask.html',
+					icon: 'el-icon-time'
+				},{
+					id: '3',
+					name: '定时任务',
+					url: 'scheduledTask.html',
+					icon: 'el-icon-time'
+				},{
+					id: '3',
+					name: '定时任务',
+					url: 'scheduledTask.html',
+					icon: 'el-icon-time'
+				},{
+					id: '3',
+					name: '定时任务',
+					url: 'scheduledTask.html',
+					icon: 'el-icon-time'
+				},{
+					id: '3',
+					name: '定时任务',
+					url: 'scheduledTask.html',
+					icon: 'el-icon-time'
+				},{
+					id: '3',
+					name: '定时任务',
+					url: 'scheduledTask.html',
+					icon: 'el-icon-time'
+				},{
+					id: '3',
+					name: '定时任务',
+					url: 'scheduledTask.html',
+					icon: 'el-icon-time'
+				},{
+					id: '3',
+					name: '定时任务',
+					url: 'scheduledTask.html',
+					icon: 'el-icon-time'
+				},{
+					id: '3',
+					name: '定时任务',
+					url: 'scheduledTask.html',
+					icon: 'el-icon-time'
+				},{
+					id: '3',
+					name: '定时任务',
+					url: 'scheduledTask.html',
+					icon: 'el-icon-time'
+				},{
+					id: '3',
+					name: '定时任务',
+					url: 'scheduledTask.html',
+					icon: 'el-icon-time'
+				},
+				{
+					id: '4',
+					name: '风险预警',
+					url: 'page/food/list.html',
+					icon: 'el-icon-warning'
+				},
+
+				{
+					id: '6',
+					name: '生猪登记',
+					url: 'page/order/list.html',
+					icon: 'el-icon-circle-plus'
+				}
+				],
+
+
+
+					danger: 0,
+				}
+				},
+					methods: {},
+				mounted(){
+					function getTime(){
+						var myDate = new Date();
+						var myYear = myDate.getFullYear(); //获取完整的年份(4位,1970-????)
+						var myMonth = myDate.getMonth()+1; //获取当前月份(0-11,0代表1月)
+						var myToday = myDate.getDate(); //获取当前日(1-31)
+						var myDay = myDate.getDay(); //获取当前星期X(0-6,0代表星期天)
+						var myHour = myDate.getHours(); //获取当前小时数(0-23)
+						var myMinute = myDate.getMinutes(); //获取当前分钟数(0-59)
+						var mySecond = myDate.getSeconds(); //获取当前秒数(0-59)
+						var week = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+						var nowTime;
+
+						nowTime = myYear+'-'+fillZero(myMonth)+'-'+fillZero(myToday)+'&nbsp;&nbsp;'+fillZero(myHour)+':'+fillZero(myMinute)+':'+fillZero(mySecond)+'&nbsp;&nbsp;'+week[myDay]+'&nbsp;&nbsp;';
+						//console.log(nowTime);
+						$('#time').html(nowTime);
+					};
+					function fillZero(str){
+						var realNum;
+						if(str<10){
+							realNum	= '0'+str;
+						}else{
+							realNum	= str;
+						}
+						return realNum;
+					}
+					setInterval(getTime,1000);
+				}
+					});
+
+			    //顶部时间
+
+			</script>			
+	</body>
+</html>

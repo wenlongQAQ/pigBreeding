@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文件上传</title>
+    <script src="assert/js/vue2.js"></script>
+    <!-- 引入组件库 -->
+    <script src="assert/element-ui/lib/index.js"></script>
+    <!-- 引入axios -->
+    <script src="assert/js/axios.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="assert/element-ui/lib/theme-chalk/index.css" />
+
+</head>
+<style>
+    .avatar-uploader .el-upload {
+        border: 1px dashed #d9d9d9;
+        border-radius: 6px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    .avatar-uploader .el-upload:hover {
+        border-color: #409EFF;
+    }
+    .avatar-uploader-icon {
+        font-size: 28px;
+        color: #8c939d;
+        width: 178px;
+        height: 178px;
+        line-height: 178px;
+        text-align: center;
+    }
+    .avatar {
+        width: 178px;
+        height: 178px;
+        display: block;
+    }
+</style>
+<body>
+<div  id="imageApp">
+    <el-upload
+            class="avatar-uploader"
+            action="/common/uploadImg"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload"
+            ref="uploadImg"
+
+    >
+        <img v-if="imageUrl" :src="imageUrl" class="avatar">
+        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+    </el-upload>
+</div>
+<!-- 开发环境版本，包含了有帮助的命令行警告 -->
+
+<script>
+    new Vue({
+        el: '#imageApp',
+        data() {
+            return {
+                imageUrl: ''
+            };
+        },
+        methods: {
+            handleAvatarSuccess(res, file) {
+                this.imageUrl = `/common/download?name=${res.data}`
+                this.imageUrl = URL.createObjectURL(file.raw);
+            },
+            beforeAvatarUpload(file) {
+                const isJPG = file.type === 'image/jpeg';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                if (!isJPG) {
+                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                }
+                return isJPG && isLt2M;
+            }
+        }
+    })
+</script>
+</body>
+</html>

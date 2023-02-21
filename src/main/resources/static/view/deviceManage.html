@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<script src="../assert/js/vue2.js"></script>
+
+<link rel="stylesheet" href="../assert/element-ui/lib/theme-chalk/index.css">
+<!-- 引入组件库 -->
+<script src="../assert/element-ui/lib/index.js"></script>
+<script src="../js/axios.min.js"></script>
+<script src="../js/request.js"></script>
+<script src="../js/echarts.min.js"></script>
+<div id = "app">
+<template>
+
+  <el-table
+          ref="filterTable"
+          :data="tableData"
+          style="width: 100%;height: 100%">
+    <el-table-column
+            prop="device.saveTime"
+            label="最近通信时间"
+            sortable
+            width="200"
+    >
+    </el-table-column>
+    <el-table-column
+            prop="device.name"
+            label="传感器名称"
+            width="200">
+    </el-table-column>
+    <el-table-column
+            prop="device.status"
+            label="传感器状态"
+            width="200"
+            >
+    </el-table-column>
+
+    <el-table-column
+            prop="device.type"
+            label="传感器类别"
+            width="200"
+           >
+      <template slot-scope="scope">
+        <el-tag
+                :type="primary"
+                disable-transitions>
+          {{scope.row.device.type}}
+        </el-tag>
+      </template>
+    </el-table-column>
+    <el-table-column
+            prop="device.data"
+            label="传感器数据"
+            width="200"
+            >
+    </el-table-column>
+    <el-table-column
+            prop="safeDataMin"
+            label="传感器最低安全值"
+            width="200"
+          >
+    </el-table-column>
+    <el-table-column
+            prop="safeDataMax"
+            label="传感器最高安全值"
+            width="200"
+          >
+    </el-table-column>
+
+    <el-table-column
+            fixed="right"
+            label="操作"
+            width="200">
+      <template slot-scope="scope">
+        <el-button @click="showDialog(scope.row.device.id)" type="text" size="small">查看近期数据</el-button>
+        <el-button type="text" size="small" @click="editDevice(scope.row.device.id)">编辑</el-button>
+      </template>
+    </el-table-column>
+  </el-table>
+
+  <el-pagination
+          class="pageList"
+          :page-sizes="[10, 20, 30, 40]"
+          :page-size="pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="counts"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+
+  ></el-pagination>
+</template>
+  <el-dialog
+          title="提示"
+          :visible.sync="dialogVisible"
+          width="30%"
+          :before-close="handleClose">
+    <span>
+      <div id="lol" style="margin: auto;width: 400px;height: 300px;display: none">
+
+      </div>
+    </span>
+    <span slot="footer" class="dialog-footer">
+    <el-button @click="cycleEnd()">取 消</el-button>
+    <el-button type="primary" @click="initEcharts()">生成数据图像</el-button>
+  </span>
+  </el-dialog>
+
+
+  <el-dialog title="收货地址" :visible.sync="editDialogVisible">
+    <el-form :model="editFormData">
+      <el-form-item label="传感器名称" :label-width="formLabelWidth">
+        <el-input v-model="editFormData.device.name" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="传感器状态" :label-width="formLabelWidth">
+        <el-select v-model="editFormData.device.status" placeholder="请选择活动区域">
+          <el-option label="开启" value="1"></el-option>
+          <el-option label="关闭" value="0"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="最后通信时间" :label-width="formLabelWidth">
+        <el-input v-model="editFormData.device.saveTime" disabled></el-input>
+      </el-form-item>
+      <el-form-item label="最低安全数据" :label-width="formLabelWidth">
+        <el-input v-model.number="editFormData.safeDataMin" autocomplete="off" ></el-input>
+      </el-form-item>
+      <el-form-item label="最高安全数据" :label-width="formLabelWidth">
+        <el-input v-model.number="editFormData.safeDataMax" autocomplete="off" ></el-input>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="dialogFormVisible = false">取 消</el-button>
+      <el-button type="primary" @click="submitEditForm()">确 定</el-button>
+    </div>
+  </el-dialog>
+
+</div>
+
+<script>
+  new Vue({
+    el: "#app",
+    data() {
+      return {
+        tableData: [],
+        editFormData:{
+          device:{
+            data:'',
+            name:'',
+            status:'',
+            type:'',
+            saveTime:'',
+            id:''
+          },
+          safeDataMin:'',
+          safeDataMax:''
+        },
+        formLabelWidth: '120px',
+        dialogVisible: false,
+        editDialogVisible:false,
+        lineChartData:[],
+        yAxisFormatter: '-',
+        yAxisName:'-',
+        rowId:'',
+        input: '', // 输入跳转到哪一页
+        counts: 0, // 总共多少数据
+        page: 1,// 当前是多少页
+        pageSize: 10, // 每页多少数据
+        cycleTime:6000,
+        endCycleTime: 60000
+      }
+    },
+
+    methods: {
+      initPage() {
+        var _this = this;
+        axios.get("/device/page?page="+this.page+"&pageSize="+this.pageSize).then(function (resp) {
+          _this.tableData = resp.data.data.records || []
+          _this.counts = resp.data.data.total
+        })
+      },
+      editDevice(id){
+        var _this = this;
+        _this.editDialogVisible = true;
+        axios.get("/device/getDeviceCommonById?id="+id).then(function (resp) {
+          _this.editFormData = resp.data.data;
+          if (resp.data.code === 200011)
+            _this.$message.success(resp.data.msg);
+          else
+            _this.$message.error(resp.data.msg+resp.data.code);
+        })
+      },
+
+      showDialog(id){
+        this.dialogVisible = true;
+        this.rowId = id;
+        var _this = this;
+        axios.get("/deviceData/getDeviceDataById?id="+_this.rowId).then(function (resp) {
+          for (let i = 0; i < resp.data.data.length;i+=1 ){
+            _this.lineChartData.push(resp.data.data[i].data);
+          }
+        })
+      },
+      cycleEnd(){
+        this.endCycleTime = 0;
+      },
+      initEcharts(){
+        var dom = document.getElementById('lol');
+        dom.style.display='';
+        var myChart = echarts.init(dom);
+        var option;
+        var _this = this;
+        function addData(shift) {
+          axios.get("/deviceData/getDeviceDataById?id="+_this.rowId).then(function (resp) {
+            _this.lineChartData.push(resp.data.data[0].data);
+          })
+          if (shift) {
+            _this.lineChartData.shift();
+          }
+        }
+        for (var i = 1; i < 100; i++) {
+          addData();
+        }
+        option = {
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: { type: 'cross' }
+          },
+          legend: {},
+          xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: ["0","5","10","15","20","25","30"],
+            axisTick: {
+              alignWithLabel: true
+            },
+
+          },
+          yAxis: {
+            boundaryGap: [0, '50%'],
+            type: 'value',
+            name: _this.yAxisName,
+            axisLabel: {
+              formatter: '{value} ' + _this.yAxisFormatter
+            }
+          },
+          series: [
+            {
+              name: _this.yAxisName,
+              type: 'line',
+              smooth: true,
+              symbol: 'none',
+              stack: 'a',
+              areaStyle: {
+                normal: {}
+              },
+              data: _this.lineChartData
+            }
+          ]
+        };
+        setInterval(function () {
+          addData(true);
+          myChart.setOption({
+            series: [
+              {
+                name: _this.yAxisName,
+                data: _this.lineChartData
+              }
+            ]
+          });
+        }, _this.cycleTime,_this.endCycleTime);
+
+        if (option && typeof option === 'object') {
+          myChart.setOption(option);
+        }
+        window.addEventListener('resize', myChart.resize);
+      },
+
+      submitEditForm(){
+        var _this = this;
+        if (_this.editFormData.safeDataMin>_this.editFormData.safeDataMax){
+          let temp;
+          temp = _this.editFormData.safeDataMin;
+          _this.editFormData.safeDataMin = _this.editFormData.safeDataMax;
+          _this.editFormData.safeDataMax = temp;
+          _this.$message.warning("max值小于min值，已为您重新设置并提交");
+        }
+        axios.put("/device/updateDevice",this.editFormData).then(function (resp){
+          _this.editDialogVisible = false;
+          _this.initPage();
+          if (resp.data.code===200021)
+            _this.$message.success(resp.data.msg);
+          else
+            this.$message.error("更新失败")
+        })
+
+      },
+
+
+      getAllDeviceCommon(){
+        var _this = this;
+        axios.get("/device/getDeviceCommon").then(function (resp) {
+          _this.tableData = resp.data;
+        })
+      },
+      handleSizeChange (val) {
+        this.pageSize = val
+        this.initPage()
+      },
+      handleCurrentChange (val) {
+        this.page = val
+        this.initPage()
+      }
+    },
+    created(){
+      // this.getAllDeviceCommon();
+      this.initPage();
+    }
+  })
+</script>
+
+</body>
+</html>

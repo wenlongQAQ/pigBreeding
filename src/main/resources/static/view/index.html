@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src="../assert/js/vue2.js"></script>
+
+    <script src="../assert/js/axios.js"></script>
+
+    <link rel="stylesheet" href="../assert/element-ui/lib/theme-chalk/index.css">
+
+    <script src="../assert/element-ui/lib/index.js"></script>
+
+
+</head>
+<style>
+
+    .el-header{
+        background-color: #B3C0D1;
+        color: #333;
+        /* line-height: 60px; */
+        height: 60px;
+        background-image: url("../assert/image/标题横幅.png");
+    }
+    .el-footer {
+        background-color: #B3C0D1;
+        color: #333;
+        /* line-height: 60px; */
+        height: 60px;
+        background-image: url("../assert/image/标题横幅.png");
+    }
+
+    .el-aside {
+        background-color: rgb(53, 167, 142);
+        color: #333;
+        height: auto;
+    }
+    .el-main {
+        /*background-color: #448be7;*/
+        /*background-image: url("../assert/image/背景一.png");*/
+    }
+    /* 解决边缘不对齐的问题 */
+    .el-menu {
+        border: none !important;
+    }
+
+    .item {
+        margin-top: 10px;
+        margin-right: 40px;
+    }
+
+</style>
+<body style="height: 100%;">
+
+<div id="app">
+    <el-container style="height: 100%; ">
+        <el-header  style="text-align: center;" >
+            HELLO WORLD
+        </el-header >
+        <el-container>
+            <el-aside width="200px" style="height: 850px;">
+                <el-menu
+                        :default-active="2"
+                        :unique-opened="false"
+                        :collapse-transition="false"
+                        background-color="#343744"
+                        text-color="#bfcbd9"
+                        active-text-color="#f4f4f5"
+                >
+                    <div v-for="item in menuList" :key="item.id">
+
+                        <el-menu-item  :index="item.id" @click="menuHandle(item,false)">
+                            <i class="iconfont" :class="item.icon"></i>
+                            <span slot="title">
+                                {{item.name}}<el-badge v-if="item.id==4" :value="warning" class="item"></el-badge>
+                            </span>
+                        </el-menu-item>
+                    </div>
+                </el-menu>
+<!--                <el-menu style="height: 850px;"-->
+<!--                         default-active="1"-->
+<!--                         class="el-menu-vertical-demo"-->
+<!--                         @open="handleOpen"-->
+<!--                         @close="handleClose"-->
+<!--                         background-color="#545c64"-->
+<!--                         text-color="#fff"-->
+<!--                         active-text-color="#ffd04b">-->
+<!--                    <el-menu-item index="1">-->
+<!--                        <template slot="title">-->
+<!--                            <i class="el-icon-location"></i>-->
+<!--                            <span>设备总览</span>-->
+<!--                        </template>-->
+<!--                    </el-menu-item>-->
+<!--                    <el-menu-item index="2">-->
+<!--                        <i class="el-icon-setting"></i>-->
+<!--                        <span slot="title">定时任务</span>-->
+<!--                    </el-menu-item>-->
+<!--                    <el-menu-item index="3"-->
+<!--                        @click="deviceIframe()"-->
+
+<!--                    >-->
+<!--                        <i class="el-icon-document"></i>风险预警-->
+<!--                        <el-badge :value="danger" class="item">-->
+<!--                        </el-badge>-->
+<!--                    </el-menu-item>-->
+<!--                    <el-menu-item index="4">-->
+<!--                        <i class="el-icon-setting"></i>-->
+<!--                        <span slot="title">基地环境</span>-->
+<!--                    </el-menu-item>-->
+<!--                    <el-menu-item index="5">-->
+<!--                        <i class="el-icon-setting"></i>-->
+<!--                        <span slot="title">生猪登记</span>-->
+<!--                    </el-menu-item>-->
+<!--                </el-menu>-->
+            </el-aside>
+            <el-main >
+                <div>
+                    <iframe id="mainIframe" :src="iframeUrl" style="width: 100%;height:800px;border: none">
+                    </iframe>
+                </div>
+
+            </el-main>
+        </el-container>
+        <el-footer>
+
+        </el-footer>
+    </el-container>
+
+
+</div>
+</body>
+<script>
+    new Vue({
+        el: "#app",
+        data() {
+            return {
+                menuList: [
+                    {
+                        id: '2',
+                        name: '设备管理',
+                        url: 'deviceManage.html',
+                        icon: 'el-icon-s-tools'
+                    },
+                    {
+                        id: '3',
+                        name: '定时任务',
+                        url: 'scheduledTask.html',
+                        icon: 'el-icon-time'
+                    },
+                    {
+                        id: '4',
+                        name: '风险警示',
+                        url: 'warningInformation.html',
+                        icon: 'el-icon-warning'
+                    },
+
+                    {
+                        id: '6',
+                        name: '生猪登记',
+                        url: 'page/order/list.html',
+                        icon: 'el-icon-circle-plus'
+                    }
+                    //   ],
+                    // },
+                ],
+                iframeUrl: 'deviceManage.html',
+                headTitle: '设备管理',
+                goBackFlag: false,
+                loading: true,
+                timer: null,
+
+
+                warning: 0,
+            }
+        },
+        methods:{
+            goBack() {
+                // window.location.href = 'javascript:history.go(-1)'
+                const menu = this.menuList.find(item=>item.id===this.menuActived)
+                // this.goBackFlag = false
+                // this.headTitle = menu.name
+                this.menuHandle(menu,false)
+            },
+            menuHandle(item, goBackFlag) {
+                console.log(item);
+                this.loading = true
+                this.menuActived = item.id
+                this.iframeUrl = item.url
+                this.headTitle = item.name
+                this.goBackFlag = goBackFlag
+                this.closeLoading()
+            },
+            closeLoading(){
+                this.timer = null
+                this.timer = setTimeout(()=>{
+                    this.loading = false
+                },1000)
+            },
+            getWarningNum(){
+                var _this = this;
+                axios.get("/warning/getNum").then(function (resp) {
+                   _this.warning =  resp.data;
+                })
+            }
+        },
+        created(){
+            this.getWarningNum();
+        }
+    });
+</script>
+</html>

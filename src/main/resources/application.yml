@@ -1,0 +1,44 @@
+spring:
+  datasource:
+   driver-class-name: com.mysql.cj.jdbc.Driver
+   name: defaultDataSource
+   url: jdbc:mysql://localhost:3306/test?serverTimezone=UTC
+   username: root
+   password: Liwenlong.0328
+   application:
+      name: pigBreeding
+
+
+#mybatis:
+#  type-aliases-package: com.zzut.pigbreeding.mybatis.entity
+#  mapper-locations=classpath: mappers/*xml
+server:
+  port: 8080
+paho:
+  factory:
+    broker: "tcp://180.76.113.115:1883"
+    userName: ""
+    password: ""
+    clientId: "JavaClient" # 在客户端上显示的发送者的名称
+  subTopic: "testtopic/#"
+  pubTopic: "testtopic/12"
+
+device:
+  type:
+    temperature: "temperature"
+  limit: "limit 5"
+safeData:
+  temperature: "1-5"
+  humidity: "2-6"
+  hydrogenSulfide: "3-7"
+  ammoniaSulfide: "4-8"
+filepath: "D:\\smartFarming\\image\\"
+url:
+  pigPrice: "https://zhujia.zhuwang.cc/areapriceinfo-410000.shtml"
+  weather: "https://restapi.amap.com/v3/weather/weatherInfo"
+
+#mybatis-plus:
+#  global-config:
+#    db-config:
+#      logic-delete-value: 0 # 逻辑已删除值(默认为 1)
+#      logic-not-delete-value: 1 # 逻辑未删除值(默认为 0)

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src=" https://cdn.jsdelivr.net/npm/echarts@5.4.1/dist/echarts.min.js "></script>
+</head>
+<body >
+<div id="container" style="height: 800px" ></div>
+
+<script type="text/javascript">
+    var dom = document.getElementById('container');
+    var myChart = echarts.init(dom, null, {
+        renderer: 'canvas',
+        useDirtyRect: false
+    });
+    var option;
+    var data = [1,2,3,4,5,6,7];
+    function addData(shift) {
+
+        if (shift) {
+            data.shift();
+        }
+    }
+    for (var i = 1; i < 100; i++) {
+        addData();
+    }
+    option = {
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            data: ["a","b","c","d","e"]
+
+        },
+        yAxis: {
+            boundaryGap: [0, '50%'],
+            type: 'value'
+        },
+        series: [
+            {
+                name: '成交',
+                type: 'line',
+                smooth: true,
+                symbol: 'none',
+                stack: 'a',
+                areaStyle: {
+                    normal: {}
+                },
+                data: data
+            }
+        ]
+    };
+    setInterval(function () {
+        addData(true);
+        myChart.setOption({
+            series: [
+                {
+                    name: '成交',
+                    data: data
+                }
+            ]
+        });
+    }, 5000);
+
+    if (option && typeof option === 'object') {
+        myChart.setOption(option);
+    }
+    window.addEventListener('resize', myChart.resize);
+</script>
+
+
+
+</body>
+</html>

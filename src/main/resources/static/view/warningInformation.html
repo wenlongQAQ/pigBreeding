@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+<script src="../assert/js/vue2.js"></script>
+
+<script src="../assert/js/axios.js"></script>
+
+<link rel="stylesheet" href="../assert/element-ui/lib/theme-chalk/index.css">
+
+<script src="../assert/element-ui/lib/index.js"></script>
+<script src="../js/warningData.js"></script>
+
+
+<body>
+<div id="warningApp">
+  <template>
+    <el-button @click="deleteHandle('批量', null)" type="warning">批量删除</el-button>
+    <el-button  @click="initPage(0)" type="info">切换到已过期数据</el-button>
+    <el-button  @click="initPage(1)" type="primary">切换到当前数据</el-button>
+    <el-table
+            :data="warningTableData"
+            border
+            style="width: 100%"
+            @selection-change="handleSelectionChange"
+    >
+      <el-table-column
+              type="selection"
+              width="55">
+      </el-table-column>
+      <el-table-column
+              prop="warningTime"
+              label="出现异常的时间"
+              width="180">
+      </el-table-column>
+      <el-table-column
+              prop="deviceName"
+              label="出现异常的设备名称"
+              width="180">
+      </el-table-column>
+      <el-table-column
+              prop="warningData"
+              label="异常的数据">
+      </el-table-column>
+      <el-table-column
+              fixed="right"
+              label="操作"
+              width="100">
+        <template slot-scope="scope">
+          <el-button @click="deleteHandle('单删',scope.row.id)" type="text" size="small">移除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-pagination
+            class="pageList"
+            :page-sizes="[10, 20, 30, 40]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="counts"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+
+    ></el-pagination>
+  </template>
+
+
+
+</div>
+<script>
+  new Vue({
+    el:"#warningApp",
+    data(){
+      return{
+        warningTableData: [],
+        checkList:[],
+        input: '', // 输入跳转到哪一页
+        counts: 0, // 总共多少数据
+        page: 1,// 当前是多少页
+        pageSize: 10, // 每页多少数据
+      }
+    },
+    methods:{
+      // getAllWarnings(){
+      //   var _this = this;
+      //   axios.get("/warning/getAllWarnings").then(function (resp){
+      //     _this.warningTableData = resp.data.data;
+      //     if (resp.data.code === 1)
+      //       _this.$message.success(resp.data.msg)
+      //     else
+      //       _this.$message.error("接口错误")
+      //   })
+      // },
+      deleteHandle (type, id) {
+        if (type === '批量' && id === null) {
+          if (this.checkList.length === 0) {
+            return this.$message.error('请选择删除对象')
+          }
+        }
+        this.$confirm('确认删除该信息, 是否继续?', '确定删除', {
+          'confirmButtonText': '确定',
+          'cancelButtonText': '取消',
+        }).then(() => {
+          deleteDish(type === '批量' ? this.checkList.join(',') : id).then(res => {
+            if (res.data.code === 1) {
+              this.$message.success('删除成功！')
+              this.initPage(1);
+            } else {
+              this.$message.error( '操作失败')
+            }
+          }).catch(err => {
+            this.$message.error('请求出错了：' + err)
+          })
+        })
+      },
+      handleSelectionChange(val) {
+        let checkArr = []
+        val.forEach((n) => {
+          console.log(n.id)
+          checkArr.push(n.id)
+        })
+        this.checkList = checkArr
+      },
+      initPage(status) {
+        var _this = this;
+        axios.get("/warning/page?page="+this.page+"&pageSize="+this.pageSize+"&status="+status).then(function (resp) {
+          _this.warningTableData = resp.data.data.records || []
+          _this.counts = resp.data.data.total
+          if (resp.data.code === 1)
+            _this.$message.success(resp.data.msg)
+          else
+            _this.$message.error("接口错误")
+        })
+
+      },
+      handleSizeChange (val) {
+        this.pageSize = val
+        this.initPage(1)
+      },
+      handleCurrentChange (val) {
+        this.page = val
+        this.initPage(1)
+      }
+    },
+    created(){
+      this.initPage(1);
+    }
+  })
+</script>
+</body>
+</html>

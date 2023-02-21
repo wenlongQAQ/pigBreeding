@@ -1,0 +1,309 @@
+body{
+	  background-image: url('../images/bg01.png');
+	   background-repeat: no-repeat;
+	   height: 100%;
+	   width: 100%;
+	   color: #ffffff;
+}
+#main{
+	  height: 100%;
+	  width: 100%;
+	  
+}
+#top{
+	    display: -webkit-inline-box;
+		height: 50px;
+		width: 100%;
+}
+.top-left {
+	    height: 65px;
+	    width: 25%;
+	    background-image: url('../images/top-left.png');
+	    background-repeat: no-repeat;
+	    background-size: 100% 100%;
+	}   
+.top-center{
+	    height: 65px;
+	    width: 50%;
+		display: -webkit-inline-box;
+}
+.top-title{
+	   color: #ffffff;
+	   width: 100%;
+	   height: 100%;
+	   font-size: 230%;
+	   text-shadow: 0 0 .3rem #00d8ff;
+	   margin-left: 23%;
+}
+.top-gif{   
+		background: url(../images/head.gif);
+		height: 100px;
+		width: 50%;
+		position: absolute;
+		background-repeat: no-repeat;
+		background-size: 100% 200%;
+}
+.top-right{
+	    height: 65px;
+	    width: 25%;
+		margin-left: 20.5%;
+		background-image: url('../images/top-right.png');
+		background-repeat: no-repeat;
+		background-size: 100% 100%;
+}
+#time{ 
+	   width: 100%;
+	   height: 100%;
+	   text-align: center;
+	   color: #ffffff;
+	   font-size: 25px;
+	   font-family: 'Times New Roman', Times, serif;
+	   text-shadow: 0 0 .3rem #00d8ff;
+	   }
+#line{
+	    margin-top: 20px;
+		height: 20px;
+		width: 100%;
+		background-image: url('../images/line.png');
+		background-repeat: no-repeat;
+		background-size: 100% 100%;
+}
+#center{
+	    display: -webkit-inline-box;
+	    height: 330px;
+	    width: 100%;
+}
+#bottom{
+	    display: -webkit-inline-box;
+	    height: 255px;
+	    width: 100%;
+
+}
+.center-left,.center-right {
+	    margin-left: 4%;
+		margin-top:4%;
+	    height: 75%;
+		width: 25%;
+	    background-image: url('../images/cheek1.png');
+		background-repeat: no-repeat;
+		background-size: 100% 100%;
+}
+.bottom-left,.bottom-right{
+	    margin-left: 4%;
+		margin-top: 2%;
+	    height: 100%;
+		width: 25%;
+	    background-image: url('../images/cheek1.png');
+		background-repeat: no-repeat;
+		background-size: 100% 100%;
+}
+
+.center-center-titlebox{
+	    width: 60%;
+		height: 12%;
+		background-image: url('../images/title.png');
+		background-size: 100% 100%;
+		margin-left: 20%;
+		display: -webkit-inline-box;
+}
+.center-left-titlebox,.center-right-titlebox,.bottom-left-titlebox,
+.bottom-center-titlebox,.bottom-right-titlebox{
+	    width: 60%;
+		height: 15%;
+		background-image: url('../images/title.png');
+		background-size: 100% 100%;
+		margin-left: 20%;
+		display: -webkit-inline-box;
+}
+.center-left-title,.center-center-title,
+.center-right-title,.bottom-left-title,
+.bottom-center-title{
+	    width: 100%;
+		height: 100%;
+		text-align: center;
+		color: #ffffff;
+		font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+		text-shadow: 0 0 .3rem #00d8ff;
+		font-size: 120%;
+		line-height: 1px;
+}
+.center-center{
+	    margin-left: 3.5%;
+		height:100%;
+		width: 35%;
+		background-image: url('../images/cheek1.png');
+		background-repeat: no-repeat;
+		background-size: 100% 100%;
+		margin-top: 1%;
+}
+.bottom-center{
+	    margin-left: 6%;
+		margin-top: 2.5%;
+		margin-right: 2.5%;
+		height:100%;
+		width: 30%;
+		background-image: url('../images/cheek1.png');
+		background-repeat: no-repeat;
+		background-size: 100% 100%;
+}
+
+.data,.navigation{
+	    height: 85%;
+		width: 100%;
+}
+.control,.information{
+	    height: 25%;
+		width: 100%;
+		margin-top: 8%;
+}
+.control-box,.information-box{
+		height: 100%;
+		width: 60%;
+		margin-left: 20%;
+		display: -webkit-inline-box;
+		background-image: url('../images/controlbox.png');
+		background-size: 100% 100%;
+}
+.control-picture{
+	    height: 90%;
+		margin:3.5% 1% 1% 10%;
+		width: 23%;
+		background-image: url("../images/control.png");
+		background-size: 80% 80%;
+		background-repeat: no-repeat;
+}
+.information-picture{
+	    height: 90%;
+		margin:3.5% 1% 1% 10%;
+		width: 23%;
+		background-image: url("../images/ininformation.png");
+		background-size: 80% 80%;
+		background-repeat: no-repeat;
+}
+.controltext{
+		height: 100%;
+		width: 100%;
+		font-size: 120%;
+		line-height: 1%;
+		margin-left: 15%;
+}
+.informationtext{
+		height: 100%;
+		width: 100%;
+		font-size: 120%;
+		line-height: 1%;
+}
+a{
+		text-decoration:none
+}
+.chart1box{
+		width: 100%;
+		height: 100%;
+}
+.chartcss{
+		width: 100%;
+		height: 83%;
+}
+.warn{
+	    margin:5% 5% 5% 8% ;
+		height: 80%;
+		width: 100%;
+		/* text-overflow: ellipsis;  /* ellipsis:显示省略符号来代表被修剪的文本  string:使用给定的字符串来代表被修剪的文本*/ 
+		white-space: nowrap;   /* nowrap:规定段落中的文本不进行换行   */ 
+		overflow: hidden; 
+}
+.warnbox{
+		height: 80%;
+		width: 100%;
+		text-align: left;
+		text-shadow: 0 0 .3rem #00d8ff;
+		
+		-webkit-box-orient: vertical; /*  -webkit-box-orient 必须结合的属性 ，设置或检索伸缩盒对象的子元素的排列方式  */
+		-webkit-line-clamp: 4; /*  -webkit-line-clamp用来限制在一个块元素显示的文本的行数 */
+		overflow: hidden;
+}
+.first,.second,.third{
+	    height: 25%;
+		width: 100%;
+		margin-top: 1%;
+}
+.first-left,.first-right,
+.second-left,.second-right,
+.third-left,.third-right{
+		height: 90%;
+		width: 41%;
+		display: -webkit-inline-box;
+		background-image: url('../images/datebg.png');
+		background-size: 100% 100% ;
+		background-repeat: no-repeat;
+		margin-top: 3%;
+		margin-left: 5.5%;
+}
+.temperature-picture{
+	    background-image: url("../images/temperature.png");
+		height: 100%;
+		width: 30%;
+		background-size: 80% 80%;
+		background-repeat: no-repeat;
+		margin-left: 5%;
+		margin-top: 2.5%;
+}
+.water-picture{
+	    background-image: url("../images/water.png");
+		height: 100%;
+		width: 30%;
+		background-size: 88% 90%;
+		background-repeat: no-repeat;
+		margin-left: 5%;
+		margin-top: 2.5%;
+}
+.oxygen-picture{
+	    background-image: url("../images/oxygen.png");
+	    height: 100%;
+	    width: 30%;
+	    background-size: 80% 80%;
+	    background-repeat: no-repeat;
+	    margin-left: 5%;
+	    margin-top: 2.5%;
+}
+.CO2-picture{
+	    background-image: url("../images/CO2.png");
+	    height: 100%;
+	    width: 30%;
+	    background-size: 78% 78%;
+	    background-repeat: no-repeat;
+	    margin-left: 6%;
+	    margin-top: 2.5%;
+}
+.H2S-picture{
+		background-image: url("../images/H2S.png");
+		height: 100%;
+		width: 30%;
+		background-size: 80% 80%;
+		background-repeat: no-repeat;
+		margin-left: 5%;
+		margin-top: 2.5%;
+}
+.NH3-picture{
+		background-image: url("../images/NH3.png");
+		height: 100%;
+		width: 30%;
+		background-size: 80% 80%;
+		background-repeat: no-repeat;
+		margin-left: 5%;
+		margin-top: 2.5%;
+}
+.temperature,.water,.oxygen,.CO2,.H2S,.NH3{
+	    height: 100%;
+		width: 60%;
+		font-size: 120%;
+		text-align: right;
+		line-height: 1%;
+		font-family: 'Times New Roman', Times, serif;
+		
+}
+.chinese{
+	font-size: 55%;
+	line-height: 1px;
+	text-shadow: 0 0 .3rem #00d8ff;
+}
