@@ -1,8 +1,9 @@
 package com.zzut.pigbreeding.controller;
 
 
-import com.baomidou.mybatisplus.extension.api.R;
 
+
+import com.zzut.pigbreeding.common.R;
 import com.zzut.pigbreeding.pojo.weather.Lives;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
@@ -52,7 +53,7 @@ public class CommonController {
     }
 
     @PostMapping("/uploadImg")
-    public String upload(MultipartFile file){
+    public R upload(MultipartFile file){
         //file是一个临时文件 不转存 很快消失
         log.info(file.toString());
         //转存
@@ -71,7 +72,7 @@ public class CommonController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return fileName;
+        return new R<>().packing(fileName,"success",1);
     }
     @GetMapping("/download")
     public void download(String name, HttpServletResponse response) {

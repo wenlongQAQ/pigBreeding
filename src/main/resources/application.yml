@@ -7,6 +7,10 @@ spring:
    password: Liwenlong.0328
    application:
       name: pigBreeding
+  servlet:
+    multipart:
+      max-file-size: 10MB
+
 
 
 #mybatis:

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../assert/js/vue2.js"></script>
+
+    <script src="../assert/js/axios.js"></script>
+
+    <link rel="stylesheet" href="../assert/element-ui/lib/theme-chalk/index.css">
+
+    <script src="../assert/element-ui/lib/index.js"></script>
+</head>
+<style>
+    .avatar-uploader .el-upload {
+        border: 1px dashed #d9d9d9;
+        border-radius: 6px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    .avatar-uploader .el-upload:hover {
+        border-color: #409EFF;
+    }
+    .avatar-uploader-icon {
+        font-size: 28px;
+        color: #8c939d;
+        width: 178px;
+        height: 178px;
+        line-height: 178px;
+        text-align: center;
+    }
+    .avatar {
+        width: 178px;
+        height: 178px;
+        display: block;
+    }
+</style>
+<body>
+
+<div id = "pigApp" >
+    <el-button  @click="dialogFormVisible = true" type="info">新增</el-button>
+    <template>
+    <el-table
+            :data="tableData"
+            border
+            style="width: 100%">
+        <el-table-column
+                prop="updateTime"
+                label="最近一次更新时间"
+                width="150">
+        </el-table-column>
+        <el-table-column
+                prop="name"
+                label="名称"
+                width="150">
+        </el-table-column>
+        <el-table-column
+                label="性别"
+                width="200">
+            <template slot-scope="scope">
+                <span style="margin-left: 10px">{{scope.row.gender==='1'?'雄性':'雌性'}}</span>
+            </template>
+        </el-table-column>
+        <el-table-column
+                label="照片"
+                width="150">
+            <template slot-scope="{ row }">
+                <el-image style="width: auto; height: 40px; border:none;cursor: pointer;"
+                          :src="getImage(row.imageName)"
+                          :preview-src-list="[ `/common/download?name=${row.image}` ]" >
+                    <div slot="error" class="image-slot">
+                        <img src="../images/noImg.png" style="width: auto; height: 40px; border:none;" >
+                    </div>
+                </el-image>
+            </template>
+        </el-table-column>
+        <el-table-column
+                prop="age"
+                label="当前年龄(月)-若为-1请检查"
+                width="180">
+        </el-table-column>
+        <el-table-column
+                prop="saveTime"
+                label="登记日期"
+                width="200">
+        </el-table-column>
+        <el-table-column
+                prop="description"
+                label="描述"
+                width="700">
+        </el-table-column>
+
+        <el-table-column
+                label="操作"
+                width="100">
+            <template slot-scope="scope">
+<!--                <el-button type="text" size="small" @click="handlerEdit()">编辑</el-button>-->
+                <el-button type="warning" size="small" @click="removePig(scope.row.id)">出栏</el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+        <el-pagination
+                class="pageList"
+                :page-sizes="[5, 10, 20, 40]"
+                :page-size="pageSize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="counts"
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+
+        ></el-pagination>
+    </template>
+
+
+    <el-dialog title="新猪入栏" :visible.sync="dialogFormVisible">
+        <el-form :model="form">
+            <el-form-item label="名称" :label-width="formLabelWidth">
+                <el-input v-model="form.name" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="性别" :label-width="formLabelWidth">
+                <el-select v-model="form.gender" placeholder="请选择活动区域">
+                    <el-option label="雄性" value="1"></el-option>
+                    <el-option label="雌性" value="0"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="出生日期" :label-width="formLabelWidth">
+                <el-date-picker
+                        v-model="form.birth"
+                        type="date"
+                        placeholder="选择猪的出生日期">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item label="描述" :label-width="formLabelWidth">
+                <el-input v-model="form.description" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="图片" :label-width="formLabelWidth">
+                <el-upload
+                        class="avatar-uploader"
+                        action="/common/uploadImg"
+                        :show-file-list="false"
+                        :on-success="handleAvatarSuccess"
+                        :before-upload="beforeAvatarUpload"
+                        ref="uploadImg"
+                >
+                    <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="addPig()">确 定</el-button>
+        </div>
+    </el-dialog>
+</div>
+
+<script>
+
+    new Vue({
+        el:"#pigApp",
+        data() {
+            return {
+                tableData: [],
+                form: {
+                   name:'',
+                   gender:'',
+                   birth:'',
+                   description:'',
+                   imageName:'',
+                },
+                dialogFormVisible: false,
+                input: '', // 输入跳转到哪一页
+                counts: 0, // 总共多少数据
+                page: 1,// 当前是多少页
+                pageSize: 5, // 每页多少数据
+                formLabelWidth: "120px",
+                imageUrl: '',
+            }
+        },
+        methods: {
+            handleClick(row) {
+                console.log(row);
+            },
+            addPig(){
+                var _this = this;
+                axios.post("/pig",_this.form).then(function (resp) {
+                    _this.dialogFormVisible = false;
+                    _this.initPage();
+                    if (resp.data.code === 1) {
+                        _this.$message.success(resp.msg);
+                    }else{
+                        _this.$message.error(resp.msg);
+                    }
+                    for(let i in _this.form){
+                        _this.form[i] = "";
+                    }
+                })
+            },
+            handlerEdit(){
+
+            },
+            removePig(id){
+                var _this = this;
+                this.$confirm('确认删除该信息, 是否继续?', '确定删除', {
+                    'confirmButtonText': '确定',
+                    'cancelButtonText': '取消',
+                }).then(() => {
+                    axios.delete("/pig?id=" + id).then(function (resp) {
+                        if (resp.data.code === 1) {
+                            _this.$message.success(resp.data.msg);
+                        }else{
+                            _this.$message.error(resp.data.msg||'接口错误');
+                        }
+                        _this.initPage();
+                    }).catch(err => {
+                        this.$message.error('请求出错了：' + err)
+                    })
+                })
+            },
+            getImage (imageName) {
+                return '/common/download?name='+imageName
+            },
+            initPage(status) {
+                var _this = this;
+                for(let i in _this.form){
+                    _this.form[i] = "";
+                }
+                axios.get("/pig/page?page="+this.page+"&pageSize="+this.pageSize+"&status="+status).then(function (resp) {
+                    _this.tableData = resp.data.data.records || []
+                    _this.counts = resp.data.data.total
+                    if (resp.data.code === 1)
+                        _this.$message.success(resp.data.msg)
+                    else
+                        _this.$message.error("接口错误")
+                })
+            },
+            handleSizeChange (val) {
+                this.pageSize = val
+                this.initPage(1)
+            },
+            handleCurrentChange (val) {
+                this.page = val
+                this.initPage(1)
+            },
+            handleAvatarSuccess (response, file, fileList) {
+                this.form.imageName = response.data;
+                this.imageUrl = '/common/download?name='+response.data
+                console.log(this.imageUrl);
+            },
+            beforeAvatarUpload(file) {
+                const isJPG = file.type === 'image/jpeg';
+                const isLt2M = file.size / 1024 / 1024 < 10;
+
+                if (!isJPG) {
+                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 10MB!');
+                }
+                return isJPG && isLt2M;
+            }
+        },
+        created(){
+            this.initPage(1);
+        }
+
+
+    })
+</script>
+</body>
+</html>

@@ -22,6 +22,7 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         log.info("insert");
         log.info(metaObject.toString());
         metaObject.setValue("saveTime", LocalDateTime.now());
+        metaObject.setValue("updateTime", LocalDateTime.now());
     }
 
     /**
@@ -31,7 +32,7 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
     @Override
     public void updateFill(MetaObject metaObject) {
         log.info("update");
-        metaObject.setValue("saveTime", LocalDateTime.now());
+        metaObject.setValue("updateTime", LocalDateTime.now());
         log.info(metaObject.toString());
     }
 }

@@ -47,8 +47,7 @@
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload"
-            ref="uploadImg"
-
+            ref="tableForm.uploadImg"
     >
         <img v-if="imageUrl" :src="imageUrl" class="avatar">
         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -61,13 +60,16 @@
         el: '#imageApp',
         data() {
             return {
-                imageUrl: ''
+                imageUrl: '',
+                tableForm:{
+                    uploadImg:""
+                }
             };
         },
         methods: {
-            handleAvatarSuccess(res, file) {
-                this.imageUrl = `/common/download?name=${res.data}`
-                this.imageUrl = URL.createObjectURL(file.raw);
+            handleAvatarSuccess (response, file, fileList) {
+                this.imageUrl = '/common/download?name='+response.data
+                console.log(this.imageUrl);
             },
             beforeAvatarUpload(file) {
                 const isJPG = file.type === 'image/jpeg';
