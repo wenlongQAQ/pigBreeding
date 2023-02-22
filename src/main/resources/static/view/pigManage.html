@@ -77,7 +77,7 @@
         </el-table-column>
         <el-table-column
                 prop="age"
-                label="当前年龄(月)-若为-1请检查"
+                label="当前年龄(月)-若为<0请检查"
                 width="180">
         </el-table-column>
         <el-table-column
@@ -86,16 +86,21 @@
                 width="200">
         </el-table-column>
         <el-table-column
+                prop="orderNum"
+                label="订单号"
+                width="200">
+        </el-table-column>
+        <el-table-column
                 prop="description"
                 label="描述"
-                width="700">
+                width="500">
         </el-table-column>
 
         <el-table-column
                 label="操作"
-                width="100">
+                width="130">
             <template slot-scope="scope">
-<!--                <el-button type="text" size="small" @click="handlerEdit()">编辑</el-button>-->
+                <el-button type="text" size="small" @click="handlerEdit(scope.row.id)">编辑</el-button>
                 <el-button type="warning" size="small" @click="removePig(scope.row.id)">出栏</el-button>
             </template>
         </el-table-column>
@@ -113,7 +118,25 @@
     </template>
 
 
-    <el-dialog title="新猪入栏" :visible.sync="dialogFormVisible">
+
+    <el-dialog title="出栏设置" :visible.sync="dialogRemovePig">
+        <template>
+            <el-select v-model="removePigTable.orderNum" placeholder="请选择">
+                <el-option
+                        v-for="item in options"
+                        :value="item">
+                </el-option>
+            </el-select>
+        </template>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogRemovePig = false">取 消</el-button>
+            <el-button type="primary" @click="salePig()">确 定</el-button>
+        </div>
+    </el-dialog>
+
+
+
+    <el-dialog title="猪种信息" :visible.sync="dialogFormVisible">
         <el-form :model="form">
             <el-form-item label="名称" :label-width="formLabelWidth">
                 <el-input v-model="form.name" autocomplete="off"></el-input>
@@ -150,7 +173,7 @@
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="addPig()">确 定</el-button>
+            <el-button type="primary" @click="addOrUpdatePig()">确 定</el-button>
         </div>
     </el-dialog>
 </div>
@@ -169,55 +192,77 @@
                    description:'',
                    imageName:'',
                 },
+                options:[],
+                removePigTable:[],
                 dialogFormVisible: false,
+                dialogRemovePig : false,
                 input: '', // 输入跳转到哪一页
                 counts: 0, // 总共多少数据
                 page: 1,// 当前是多少页
                 pageSize: 5, // 每页多少数据
                 formLabelWidth: "120px",
                 imageUrl: '',
+
             }
         },
         methods: {
             handleClick(row) {
                 console.log(row);
             },
-            addPig(){
+            addOrUpdatePig(){
                 var _this = this;
-                axios.post("/pig",_this.form).then(function (resp) {
-                    _this.dialogFormVisible = false;
-                    _this.initPage();
-                    if (resp.data.code === 1) {
-                        _this.$message.success(resp.msg);
-                    }else{
-                        _this.$message.error(resp.msg);
-                    }
-                    for(let i in _this.form){
-                        _this.form[i] = "";
-                    }
-                })
-            },
-            handlerEdit(){
+                if (_this.form.id === undefined){
+                    axios.post("/pig",_this.form).then(function (resp) {
+                        if (resp.data.code === 1) {
+                            _this.$message.success(resp.msg);
+                        }else{
+                            _this.$message.error(resp.msg);
+                        }
+                    })
+                }else {
+                    axios.put("/pig",_this.form).then(function (resp) {
+                        if (resp.data.code === 1) {
+                            _this.$message.success(resp.msg);
+                        }else{
+                            _this.$message.error(resp.msg);
+                        }
+                    })
+                }
+                _this.dialogFormVisible = false;
+                _this.initPage();
+                for(let i in _this.form){
+                    _this.form[i] = "";
+                }
 
             },
+            handlerEdit(id){
+                var _this = this;
+                axios.get("/pig/getById?id=" + id).then(function (resp) {
+                    _this.form = resp.data.data;
+                })
+                _this.dialogFormVisible = true;
+            },
+
             removePig(id){
                 var _this = this;
-                this.$confirm('确认删除该信息, 是否继续?', '确定删除', {
-                    'confirmButtonText': '确定',
-                    'cancelButtonText': '取消',
-                }).then(() => {
-                    axios.delete("/pig?id=" + id).then(function (resp) {
-                        if (resp.data.code === 1) {
-                            _this.$message.success(resp.data.msg);
-                        }else{
-                            _this.$message.error(resp.data.msg||'接口错误');
-                        }
-                        _this.initPage();
-                    }).catch(err => {
-                        this.$message.error('请求出错了：' + err)
-                    })
+                axios.get("/order/getOrderNum").then(function (resp) {
+                    _this.options = resp.data.data;
+                })
+                _this.dialogRemovePig = true;
+                axios.get("/pig/getById?id="+id).then(function (resp){
+                    _this.removePigTable = resp.data.data;
+                })
+
+            },
+            salePig(){
+                var _this = this;
+                axios.put("/pig/sale",this.removePigTable).then(function (resp) {
+                    _this.$message.info(resp.data.msg);
+                    _this.dialogRemovePig = false;
+                    _this.initPage();
                 })
             },
+
             getImage (imageName) {
                 return '/common/download?name='+imageName
             },
@@ -243,6 +288,7 @@
                 this.page = val
                 this.initPage(1)
             },
+
             handleAvatarSuccess (response, file, fileList) {
                 this.form.imageName = response.data;
                 this.imageUrl = '/common/download?name='+response.data
@@ -263,6 +309,8 @@
         },
         created(){
             this.initPage(1);
+
+
         }
 
 

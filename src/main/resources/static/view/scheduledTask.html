@@ -8,46 +8,134 @@
     <link rel="stylesheet" href="../assert/element-ui/lib/theme-chalk/index.css">
     <!-- 引入组件库 -->
     <script src="../assert/element-ui/lib/index.js"></script>
+    <script src="../js/axios.min.js"></script>
 </head>
+<style>
+    .avatar-uploader .el-upload {
+        border: 1px dashed #d9d9d9;
+        border-radius: 6px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    .avatar-uploader .el-upload:hover {
+        border-color: #409EFF;
+    }
+    .avatar-uploader-icon {
+        font-size: 28px;
+        color: #8c939d;
+        width: 178px;
+        height: 178px;
+        line-height: 178px;
+        text-align: center;
+    }
+    .avatar {
+        width: 178px;
+        height: 178px;
+        display: block;
+    }
+</style>
 <body>
 <div id="scheduledTaskApp">
-    <el-button>新增定时任务</el-button>
+    <el-button @click = "dialogFormVisible = true">新增订单</el-button>
     <template>
         <el-table
-                :data="taskData"
+                :data="tableData"
                 style="width: 100%">
             <el-table-column
-                    prop="date"
-                    label="任务执行时间"
+                    prop="orderNum"
+                    label="订单号"
                     width="250">
             </el-table-column>
             <el-table-column
-                    prop="name"
-                    label="任务名称"
-                    width="250">
+                    label="订单图片"
+                    width="150">
+                <template slot-scope="{ row }">
+                    <el-image style="width: auto; height: 40px; border:none;cursor: pointer;"
+                              :src="getImage(row.orderImageName)"
+                              :preview-src-list="[ '/common/download?name=${row.image}' ]" >
+                        <div slot="error" class="image-slot">
+                            <img src="../images/noImg.png" style="width: auto; height: 40px; border:none;" >
+                        </div>
+                    </el-image>
+                </template>
             </el-table-column>
             <el-table-column
-                    prop="address"
-                    label="操作设备名称"
+                    prop="successTime"
+                    label="订单成交时间"
                     width="250"
             >
             </el-table-column>
             <el-table-column
+                    prop="saveTime"
+                    label="订单创建时间"
+                    width="250"
+            >
+            </el-table-column>
+            <el-table-column
+                    prop="description"
                     label="备注"
-                    prop="remarks"
                     width="250"
             >
             </el-table-column>
             <el-table-column
                 label="操作">
                 <template slot-scope="scope">
-                    <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-                    <el-button type="text" size="small">编辑</el-button>
+                    <el-button type="text" size="small " @click="handleEdit(scope.row.id)">编辑</el-button>
                 </template>
             </el-table-column>
-
         </el-table>
     </template>
+    <el-pagination
+            class="pageList"
+            :page-sizes="[5, 10, 20, 40]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="counts"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+    ></el-pagination>
+
+        <!--addForm-->
+    <el-dialog title="订单信息" :visible.sync="dialogFormVisible">
+        <el-form :model="form">
+            <el-form-item label="订单号" :label-width="formLabelWidth">
+                <el-input v-model.num="form.orderNum" autocomplete="off"></el-input>
+            </el-form-item>
+
+            <el-form-item label="订单成交日期" :label-width="formLabelWidth">
+                <el-date-picker
+                        v-model="form.successTime"
+                        type="date"
+                        placeholder="请选择订单成交日期">
+                </el-date-picker>
+            </el-form-item>
+
+            <el-form-item label="描述" :label-width="formLabelWidth">
+                <el-input type="textarea"  v-model="form.description" autocomplete="off"></el-input>
+            </el-form-item>
+
+            <el-form-item label="订单照片" :label-width="formLabelWidth">
+                <el-upload
+                        class="avatar-uploader"
+                        action="/common/uploadImg"
+                        :show-file-list="false"
+                        :on-success="handleAvatarSuccess"
+                        :before-upload="beforeAvatarUpload"
+                        ref="uploadImg"
+                >
+                    <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+            </el-form-item>
+
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="addOrderBatch()">确 定</el-button>
+        </div>
+    </el-dialog>
+
 </div>
 
 
@@ -56,24 +144,98 @@
       el:"#scheduledTaskApp",
       data() {
           return {
-              taskData: [{
-                  date: '2016-05-02',
-                  name: '王小虎',
-                  address: '上海市普陀区金沙江路 1518 弄'
-              }, {
-                  date: '2016-05-04',
-                  name: '王小虎',
-                  address: '上海市普陀区金沙江路 1517 弄'
-              }, {
-                  date: '2016-05-01',
-                  name: '王小虎',
-                  address: '上海市普陀区金沙江路 1519 弄'
-              }, {
-                  date: '2016-05-03',
-                  name: '王小虎',
-                  address: '上海市普陀区金沙江路 1516 弄'
-              }]
+              tableData: [],
+              form: {
+                  orderNum:'',
+                  successTime: '',
+                  description:'',
+                  orderImageName: ''
+              },
+              input: '', // 输入跳转到哪一页
+              counts: 0, // 总共多少数据
+              page: 1,// 当前是多少页
+              pageSize: 5, // 每页多少数据
+              formLabelWidth: 80,
+              imageUrl: '',
+              dialogFormVisible: false
           }
+      },
+      methods:{
+          //add
+          addOrderBatch(){
+              var _this = this;
+              axios.post("/order",this.form).then(function (resp) {
+                  if(resp.data.code === 1){
+                      _this.$message.success(resp.data.msg)
+                      _this.initPage();
+                  }else
+                      _this.$message.error(resp.data.msg);
+              })
+              _this.dialogFormVisible = false;
+              for(let i in _this.form){
+                  _this.form[i] = "";
+              }
+          },
+          //   page
+          initPage(status) {
+              var _this = this;
+              for(let i in _this.form){
+                  _this.form[i] = "";
+              }
+              axios.get("/order/page?page="+this.page+"&pageSize="+this.pageSize+"&status="+status).then(function (resp) {
+                  _this.tableData = resp.data.data.records || []
+                  _this.counts = resp.data.data.total
+                  if (resp.data.code === 1)
+                      _this.$message.success(resp.data.msg)
+                  else
+                      _this.$message.error("接口错误")
+              })
+          },
+          handleSizeChange (val) {
+              this.pageSize = val
+              this.initPage(1)
+          },
+          handleCurrentChange (val) {
+              this.page = val
+              this.initPage(1)
+          },
+
+          // get image
+          getImage (imageName) {
+              return '/common/download?name='+imageName
+          },
+
+          handleAvatarSuccess (response, file, fileList) {
+              this.form.orderImageName = response.data;
+              this.imageUrl = '/common/download?name='+response.data
+              console.log(this.imageUrl);
+          },
+          beforeAvatarUpload(file) {
+              const isJPG = file.type === 'image/jpeg';
+              const isLt2M = file.size / 1024 / 1024 < 10;
+
+              if (!isJPG) {
+                  this.$message.error('上传头像图片只能是 JPG 格式!');
+              }
+              if (!isLt2M) {
+                  this.$message.error('上传头像图片大小不能超过 10MB!');
+              }
+              return isJPG && isLt2M;
+          },
+          //Edit
+          handleEdit( id ){
+              this.dialogFormVisible = true;
+              var _this = this;
+              for(let i in _this.form){
+                  _this.form[i] = "";
+              }
+              axios.get("/order/getById?id=" + id).then(function (resp) {
+                  _this.form = resp.data.data;
+              })
+          }
+      },
+      created(){
+          this.initPage(1);
       }
   })
 </script>

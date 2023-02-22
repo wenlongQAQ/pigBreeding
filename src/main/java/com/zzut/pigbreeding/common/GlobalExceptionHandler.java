@@ -19,15 +19,15 @@ public class GlobalExceptionHandler {
      * @return
      */
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public String exceptionHandler(SQLIntegrityConstraintViolationException ex){
+    public R exceptionHandler(SQLIntegrityConstraintViolationException ex){
         log.error(ex.getMessage());
         if (ex.getMessage().contains("Duplicate entry")){
             String[] s = ex.getMessage().split(" ");
-            String msg ="不允许有相同的设备名称->"+ s[2] + "已存在!";
-            return msg;
+            String msg ="不允许有相同的数据->"+ s[2] + "已存在!";
+            return new R<>().packing("",msg,0);
         }
 
-        else return "啊,未知错误?";
+        else return new R<>().packing("","未知错误 ",0);
     }
 
 }

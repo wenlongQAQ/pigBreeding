@@ -7,6 +7,6 @@ import com.zzut.pigbreeding.service.DeviceDataService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DeviceDatantServiceImpl extends ServiceImpl<DeviceDataMapper, DeviceData> implements DeviceDataService {
+public class DeviceDataServiceImpl extends ServiceImpl<DeviceDataMapper, DeviceData> implements DeviceDataService {
 
 }

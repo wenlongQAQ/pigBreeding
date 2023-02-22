@@ -4,6 +4,7 @@ package com.zzut.pigbreeding;
 import com.alibaba.fastjson.JSON;
 import com.zzut.pigbreeding.paho.message.IMessage;
 import com.zzut.pigbreeding.paho.server.ConnectServer;
+import com.zzut.pigbreeding.pojo.OrderBatch;
 import com.zzut.pigbreeding.pojo.PigPrice;
 import com.zzut.pigbreeding.pojo.device.Device;
 
@@ -14,6 +15,7 @@ import com.zzut.pigbreeding.pojo.weather.LivesDto;
 import com.zzut.pigbreeding.service.DeviceService;
 
 
+import com.zzut.pigbreeding.service.OrderBatchService;
 import com.zzut.pigbreeding.util.HtmlParseUtil;
 import com.zzut.pigbreeding.util.SendRequestWeatherUtil;
 import org.eclipse.paho.client.mqttv3.*;
@@ -23,8 +25,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @SpringBootTest
@@ -131,5 +136,16 @@ class PigBreedingApplicationTests {
         LocalDateTime now = LocalDateTime.now();
         Duration between = Duration.between(of, now);
         System.out.println(between.toDays());
+    }
+    @Autowired
+    private OrderBatchService orderBatchService;
+    @Test
+    void testOrderBatchService(){
+        OrderBatch orderBatch = new OrderBatch();
+        Date date = new Date();
+        DateFormat c = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        System.out.println(c.format(date));
+        orderBatch.setSuccessTime(new Date());
+        orderBatchService.save(orderBatch);
     }
 }

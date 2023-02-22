@@ -17,7 +17,7 @@ public class Device {
     // 传感器类型
     private String type;
     // 得到数据的时间
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime saveTime;
     private Long id;
 

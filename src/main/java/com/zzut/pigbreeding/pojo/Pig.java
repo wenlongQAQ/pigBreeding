@@ -17,6 +17,11 @@ public class Pig {
     private String gender;
     //猪出生日期
     private Date birth;
+    //订单号
+    @TableField(exist = false)
+    private Long orderNum;
+    //订单id
+    private Long orderId;
     //年龄 月份
     private Integer age;
     //登记该猪的时间

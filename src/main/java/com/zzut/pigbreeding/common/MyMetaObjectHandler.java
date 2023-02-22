@@ -22,7 +22,6 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         log.info("insert");
         log.info(metaObject.toString());
         metaObject.setValue("saveTime", LocalDateTime.now());
-        metaObject.setValue("updateTime", LocalDateTime.now());
     }
 
     /**
