@@ -11,7 +11,22 @@
 <script src="../assert/element-ui/lib/index.js"></script>
 <script src="../js/axios.min.js"></script>
 <script src="../js/request.js"></script>
+
 <script src="../js/echarts.min.js"></script>
+<style>
+  /*最外层透明*/
+  .el-table, .el-table__expanded-cell{
+    background-color: transparent;
+  }
+  /* 表格内背景颜色 */
+  .el-table th,
+  .el-table tr,
+  .el-table td {
+    background-color: transparent;
+    color:white
+  }
+
+</style>
 <div id = "app">
 <template>
 
@@ -89,16 +104,15 @@
           :total="counts"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
-
   ></el-pagination>
 </template>
   <el-dialog
           title="提示"
           :visible.sync="dialogVisible"
-          width="30%"
+          width="60%"
           :before-close="handleClose">
     <span>
-      <div id="lol" style="margin: auto;width: 400px;height: 300px;display: none">
+      <div id="lol" style="margin: auto;width: 800px;height: 300px;display: none">
 
       </div>
     </span>
@@ -160,15 +174,16 @@
         dialogVisible: false,
         editDialogVisible:false,
         lineChartData:[],
-        yAxisFormatter: '-',
-        yAxisName:'-',
+        yAxisFormatter: '',
+        yAxisName:'',
         rowId:'',
         input: '', // 输入跳转到哪一页
         counts: 0, // 总共多少数据
         page: 1,// 当前是多少页
         pageSize: 10, // 每页多少数据
         cycleTime:6000,
-        endCycleTime: 60000
+        endCycleTime: 60000,
+        cycle: '',
       }
     },
 
@@ -193,16 +208,25 @@
       },
 
       showDialog(id){
+        if (this.cycle != undefined)
+          clearInterval(this.cycle);
         this.dialogVisible = true;
         this.rowId = id;
         var _this = this;
         axios.get("/deviceData/getDeviceDataById?id="+_this.rowId).then(function (resp) {
+          switch (resp.data.data[0].type) {
+            case 'hum' : _this.yAxisFormatter = '%rh'; _this.yAxisName = '湿度'; break;
+            case 'temp' : _this.yAxisFormatter = '℃' ; _this.yAxisName = '温度';break;
+            default : _this.yAxisFormatter= 'ppm/lx' ; _this.yAxisName = '气体/光照强度'
+          }
           for (let i = 0; i < resp.data.data.length;i+=1 ){
             _this.lineChartData.push(resp.data.data[i].data);
           }
         })
+        this.initEcharts();
       },
       cycleEnd(){
+        clearInterval(this.cycle);
         this.dialogVisible = false;
         this.endCycleTime = 0;
       },
@@ -220,9 +244,9 @@
             _this.lineChartData.shift();
           }
         }
-        for (var i = 1; i < 100; i++) {
-          addData();
-        }
+        // for (var i = 1; i < 100; i++) {
+        //   addData();
+        // }
         option = {
           tooltip: {
             trigger: 'axis',
@@ -242,6 +266,10 @@
             boundaryGap: [0, '50%'],
             type: 'value',
             name: _this.yAxisName,
+            min: 0,
+            max: function(value) {//取最大值向上取整为最大刻度
+              return  Math.ceil(value.max)
+            },
             axisLabel: {
               formatter: '{value} ' + _this.yAxisFormatter
             }
@@ -260,7 +288,7 @@
             }
           ]
         };
-        setInterval(function () {
+        _this.cycle = setInterval(function () {
           addData(true);
           myChart.setOption({
             series: [
@@ -280,7 +308,7 @@
 
       submitEditForm(){
         var _this = this;
-        if (_this.editFormData.safeDataMin>_this.editFormData.safeDataMax){
+        if (_this.editFormData.safeDataMin > _this.editFormData.safeDataMax){
           let temp;
           temp = _this.editFormData.safeDataMin;
           _this.editFormData.safeDataMin = _this.editFormData.safeDataMax;
@@ -305,6 +333,8 @@
           _this.tableData = resp.data;
         })
       },
+
+
       handleSizeChange (val) {
         this.pageSize = val
         this.initPage()

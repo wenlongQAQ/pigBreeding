@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>智慧养猪</title>
+		<link rel="stylesheet" type="text/css" href="css/index.css">
+	</head>
+	<script type="text/javascript">
+		function change ()
+		{
+			var c = document.getElementsByClassName("datum");
+			var pig = document.getElementsByClassName("pigprice")
+			for ( var i = 0; i < 3; i++)
+			{
+				var obj = c[i];
+				var p =pig[i];
+				var num = parseFloat(obj.innerHTML) ;
+				obj.style.color = num > 0 ? "red" : "green";
+				p.style.color= num > 0 ?  "red" : "green";
+			}
+		};
+	</script>
+	<body >
+		<!-- 总体 -->
+		<div id="main">
+			<!-- 头部 -->
+			<div id="top">
+				<!-- 头部左边 -->
+				<div class="top-left">
+					<div class="navigation">
+						<div class="control-box">
+							<div class="control">
+
+								<a style="display: inherit;color: aliceblue;" href="../index.html"><p>控制台</p></a>
+							</div>
+						</div>
+<!--						<div class="information-box">-->
+<!--							<div class="information">-->
+<!--								&lt;!&ndash; TODO &ndash;&gt;-->
+<!--								<a style="display: inherit;color: aliceblue;" href="../pigManage.html"><p>信息管理</p></a>-->
+<!--							</div>-->
+<!--						</div>-->
+					</div>
+				</div>
+				<!-- 头部中间 -->
+				<div class="top-center">
+					<div class="top-gif">
+						<div class="top-title">
+							<p>智慧养猪可视化大屏中心</p>
+						</div>
+					</div>
+				</div>
+				<!-- 头部右边 -->
+				<div class="top-right">
+					<div id="time"></div>
+				</div>
+			</div>
+			<!-- 中间装饰 -->
+			<div id="line">			
+			</div>
+			<!-- 中间 数据展示-->
+			<div id="center">
+				<!-- 今日猪价-->
+				<div class="center-left">
+					<!-- 今日猪价标题 -->
+					<div class="center-left-titlebox">
+						<div class="center-left-title">
+							<p>今日猪价</p>
+						</div>
+					</div>
+					<div class="pricebox" >
+						<div class="pricetext">
+							<p>河南</p>													
+						</div>
+						<div class="pricep">
+							<div class="pig-first">
+								<div class="pigtext">
+									<p>生猪（外三元）</p>
+								</div>
+								<div class="pigprice">
+									<p v-if="price[0].change.charAt(0)!='-'"  style="text-shadow: 0 0 .3rem red;" >{{price[0].price}}</p>
+									<p v-else="price[0].change.charAt(0)==='-'"  style="text-shadow: 0 0 .3rem green;" >{{price[0].price}}</p>
+								</div>
+								<div class="unit">
+									<p>元/kg</p>
+								</div>
+								<div class="trend">
+									<p v-if="price[0].change.charAt(0)!='-'"  style="text-shadow: 0 0 .3rem red;" class="datum">{{price[0].change}}</p>
+									<p v-else="price[0].change.charAt(0)==='-'"  style="text-shadow: 0 0 .3rem green;" class="datum">{{price[0].change}}</p>
+
+								</div>
+							</div>
+							<div class="pig-second">
+								<div class="pigtext">
+									<p>生猪（内三元）</p>
+								</div>
+								<div class="pigprice">
+									<p v-if="price[1].change.charAt(0)!='-'"  style="text-shadow: 0 0 .3rem red;" >{{price[1].price}}</p>
+									<p v-else="price[1].change.charAt(0)==='-'"  style="text-shadow: 0 0 .3rem green;" >{{price[1].price}}</p>
+
+								</div>										
+								<div class="unit">
+									<p>元/kg</p>
+								</div>
+								<div class="trend">
+									<p v-if="price[1].change.charAt(0)!='-'" class="datum" style="text-shadow: 0 0 .3rem red;">{{price[1].change}}</p>
+									<p v-else="price[1].change.charAt(0)==='-'" class="datum" style="text-shadow: 0 0 .3rem green;">{{price[1].change}}</p>
+								</div>
+							</div>
+							<div class="pig-third">
+								<div class="pigtext">
+									<p>生猪（土杂猪）</p>
+								</div>
+								<div class="pigprice">
+									<p v-if="price[2].change.charAt(0)!='-'"  style="text-shadow: 0 0 .3rem red;" >{{price[2].price}}</p>
+									<p v-else="price[2].change.charAt(0)==='-'"  style="text-shadow: 0 0 .3rem green;" >{{price[2].price}}</p>
+								</div>
+								<div class="unit">
+									<p>元/kg</p>
+								</div>
+								<div class="trend">
+									<p v-if="price[2].change.charAt(0)!='-'"  style="text-shadow: 0 0 .3rem red;" class="datum">{{price[2].change}}</p>
+									<p v-else="price[2].change.charAt(0)==='-'"  style="text-shadow: 0 0 .3rem green;" class="datum">{{price[2].change}}</p>
+								</div>
+							</div>
+							
+						</div>
+					</div>
+				</div>
+				<!-- 实时数据显示 -->
+				<div class="center-center">
+					<div class="center-center-titlebox">
+						<div class="center-center-title">
+							<p>环境曲线趋势图</p>
+						</div>
+					</div>
+			            <div class="chart1box">
+							<div  class=" chartcss" id="chart1"></div>
+						</div>
+				</div>
+				<!-- 警告 -->
+				<div class="center-right">
+					<div class="center-right-titlebox">
+						<div class="center-right-title">
+							<p>警告<i style="color: yellow;font-size: 25px; text-shadow: 0 0 .3rem yellow"><em>!</em></i></p>														
+						</div>	
+						</div>
+					<div class="warn">
+						<div class="warnbox">
+							<!-- TODO -->
+							<marquee style="height: 100%;" behavior="scroll"  loop=-1 scrolldelay="1" scrollamount="5" onmouseout="this.start();" onmouseover="this.stop();" direction="up">
+
+								<div v-for="item in warningList" :key="item.id">
+                                {{item}}
+                            </span>
+									</el-menu-item>
+								</div>
+							</marquee>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 底部 -->
+			<div id="bottom">
+				<div class="bottom-left">
+					<div class="bottom-left-titlebox">
+						<div class="bottom-left-title">
+							<p>实时天气情况</p>
+						</div>
+					</div>
+					<div class="weather">
+						<iframe width="280" height="300" src="https://i.tianqi.com/?c=code&a=getcode&id=55&color=%2300B0F0&icon=1" frameborder="0"></iframe>
+				    </div>
+				</div>
+				<div class="bottom-center">
+					<div class="bottom-center-titlebox">
+						<div class="bottom-center-title">
+							<p>实时数据</p>
+						</div>						
+					</div>
+					<div class="data">
+						<div class="first">
+							<div class="first-left">
+								<div class="temperature-picture"></div>
+									<div class="temperature">
+										<b><p class="chinese">温度</p></b>
+										<!-- TODO -->
+										<p>{{temp}}℃</p>
+									</div>
+							</div>
+							<div class="first-right">
+								<div class="water-picture"></div>
+									<div class="water">
+										<b><p class="chinese">湿度</p></b>
+										<!-- TODO -->	
+										<p>{{hum}}%</p>
+										</div>
+							</div>								
+						</div>
+						<div class="second">
+							<div class="third-left">
+								<div class="H2S-picture"></div>
+								<div class="H2S">
+									<b><p class="chinese">光照</p></b>
+									<!-- TODO -->
+									<p>{{light}}lx</p>
+								</div>
+							</div>
+
+							<div class="second-right">			
+								<div class="CO2-picture"></div>
+									<div class="CO2">
+										<b><p class="chinese">二氧化碳</p></b>
+										<!-- TODO -->
+										<p>{{co2}}ppm</p>
+									</div>
+							</div>					    
+						</div>
+						<div class="third">
+							<div class="second-left">
+								<div class="CH4-picture"></div>
+								<div class="CH4">
+									<!-- TODO -->
+									<b><p class="chinese">TVOC</p></b>
+									<p>{{tvoc}}ppm</p></div>
+							</div>
+							<div class="third-right">
+								<div class="NH3-picture"></div>
+									<div class="NH3">
+										<b><p class="chinese">氨气</p></b>
+									   <!-- TODO -->
+										<p>{{nh3}}ppm</p>
+									</div>
+						    </div>
+						</div>
+					</div>
+				</div>
+				<div class="bottom-right">
+					<div class="bottom-right-titlebox">
+					    <div class="bottom-right-title">
+							<p>猪群信息</p>
+					    </div>	
+					</div>
+					<div id="chart2" class="ring"></div>
+				</div>
+			</div>			
+		</div>
+			<script src="js/jquery.min.js"></script>
+			<script src="js/echarts.min.js"></script>
+			<script src="js/echarts.js"> </script>
+			<script src="js/fontscroll.js"></script>
+			<script src="../../assert/js/vue2.js"></script>
+			<script src="../../assert/js/axios.js"></script>
+			<script>
+				new Vue({
+					el:"#main",
+					data(){
+						return{
+							hum:'',
+							temp:'',
+							co2:'',
+							nh3:'',
+							tvoc:'',
+							light:'',
+							warningList:[],
+
+							humDataList:[],// 湿度数据
+							tvocDataList:[],// tvoc数据
+							lightDataList:[],// 光照数据
+							CO2DataList:[],// 二氧化碳浓度
+							nh3DataList:[],
+							tempDataList:[],//温度
+
+							ageData:{
+								level1:1,
+								level2:1,
+								level3:1,
+								level4:1,
+								level5:1
+							},
+							price:[
+								{
+									name:'',
+									price:'',
+									change:''
+								},
+								{
+									name:'',
+									price:'',
+									change:''
+								},
+								{
+									name:'',
+									price:'',
+									change:''
+								}
+							]
+						}
+					},
+					methods: {
+						getData() {
+							var _this = this;
+							axios.get("/deviceData/getDataByType?type=" + 'temp').then(function (resp) {
+								_this.temp = resp.data.data.data;
+								axios.get("/deviceData/getRecentDataByType?type=" + 'temp').then(function (resp) {
+									for(let i =0; i<resp.data.data.length; i++){
+										_this.tempDataList.push(resp.data.data[i].data);
+										_this.ceshis();
+									}
+								})
+							})
+							axios.get("/deviceData/getDataByType?type=" + 'hum').then(function (resp) {
+								_this.hum = resp.data.data.data;
+								axios.get("/deviceData/getRecentDataByType?type=" + 'hum').then(function (resp) {
+									for(let i =0; i<resp.data.data.length; i++){
+										_this.humDataList.push(resp.data.data[i].data);
+									}
+								})
+							})
+							axios.get("/deviceData/getDataByType?type="+'CO2').then(function (resp) {
+								_this.co2 = resp.data.data.data;
+										axios.get("/deviceData/getRecentDataByType?type=" + 'CO2').then(function (resp) {
+											for(let i =0; i<resp.data.data.length; i++){
+												_this.CO2DataList.push(resp.data.data[i].data);
+											}
+										})
+							})
+							// axios.get("/deviceData/getDataByType?type="+'nh3').then(function (resp) {
+							// 	_this.nh3 = resp.data.data.data;
+							// axios.get("/deviceData/getRecentDataByType?type=" + 'CO2').then(function (resp) {
+							// 	for(let i =0; i<resp.data.data.length; i++){
+							// 		_this.nh3DataList.push(resp.data.data[i].data);
+							// 	}
+							// })
+							// })
+							axios.get("/deviceData/getDataByType?type="+'light').then(function (resp) {
+								_this.light = resp.data.data.data;
+								axios.get("/deviceData/getRecentDataByType?type=" + 'light').then(function (resp) {
+									for(let i =0; i<resp.data.data.length; i++){
+										_this.lightDataList.push(resp.data.data[i].data);
+									}
+								})
+							})
+							_this.ceshis();
+							axios.get("/deviceData/getDataByType?type="+'TVOC').then(function (resp) {
+								_this.tvoc = resp.data.data.data;
+								axios.get("/deviceData/getRecentDataByType?type=" + 'hum').then(function (resp) {
+									for(let i =0; i<resp.data.data.length; i++){
+										_this.tvocDataList.push(resp.data.data[i].data);
+										console.log(_this.humDataList);
+										console.log(resp.data.data[i].data);
+									}
+								})
+							})
+
+							axios.get("/pig/ageList").then(function (resp) {
+								_this.ageData = resp.data.data;
+								_this.ceshis1();
+							})
+							axios.get("/warning/getAllWarnings").then(function (resp) {
+								_this.warningList = resp.data.data;
+							})
+							axios.get("/common/getPrice").then(function (resp) {
+								_this.price = resp.data.data;
+							})
+						},
+						getTime() {
+							var myDate = new Date();
+							var myYear = myDate.getFullYear(); //获取完整的年份(4位,1970-????)
+							var myMonth = myDate.getMonth() + 1; //获取当前月份(0-11,0代表1月)
+							var myToday = myDate.getDate(); //获取当前日(1-31)
+							var myDay = myDate.getDay(); //获取当前星期X(0-6,0代表星期天)
+							var myHour = myDate.getHours(); //获取当前小时数(0-23)
+							var myMinute = myDate.getMinutes(); //获取当前分钟数(0-59)
+							var mySecond = myDate.getSeconds(); //获取当前秒数(0-59)
+							var week = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+							var nowTime;
+
+							nowTime = myYear + '-' + this.fillZero(myMonth) + '-' + this.fillZero(myToday) + '&nbsp;&nbsp;' + this.fillZero(myHour) + ':' + this.fillZero(myMinute) + ':' + this.fillZero(mySecond) + '&nbsp;&nbsp;' + week[myDay] + '&nbsp;&nbsp;';
+							//console.log(nowTime);
+							$('#time').html(nowTime);
+						},
+						 fillZero(str){
+							var realNum;
+							if(str<10){
+								realNum	= '0'+str;
+							}else{
+								realNum	= str;
+							}
+							return realNum;
+						 },
+
+						ceshis() {
+							var _this = this;
+							var myChart = echarts.init(document.getElementById('chart1'));
+
+							option = {
+								tooltip: {
+									trigger: 'axis'
+								},
+								toolbox: {
+									show: true,
+									feature: {
+										mark: {
+											show: true
+										},
+										dataView: {
+											show: true,
+											readOnly: false
+										},
+										magicType: {
+											show: true,
+											type: ['line', 'bar']
+										},
+										restore: {
+											show: true
+										},
+										saveAsImage: {
+											show: true
+										}
+									}
+								},
+								grid: {
+									top: 'middle',
+									left: '3%',
+									right: '4%',
+									bottom: '3%',
+									top: '10%',
+									containLabel: true
+								},
+								legend: {
+									data: ['湿度', '温度', '光照','氨气','TVOC','二氧化碳'],
+									textStyle: {
+										color: "#fff"
+									}
+
+								},
+								xAxis: [{
+									type: 'category',
+									// ToDo
+									data: ['1:00', '2:00', '3:00', '4:00', '5:00', '6:00', '7:00', '8:00', '9:00', '10:00', '11:00', '12:00',
+										'13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00','23:00','00:00'
+									],
+									axisLabel: {
+										show: true,
+										textStyle: {
+											color: "#ebf8ac" //X轴文字颜色
+										}
+									},
+									axisLine: {
+										lineStyle: {
+											color: '#01FCE3'
+										}
+									},
+								}],
+								yAxis: [
+									{
+										type: 'value',
+										name: '温度',
+										// min:0,  //取0为最小刻度
+										// max: 100, //取100为最大刻度
+										// min:'dataMin', //取最小值为最小刻度
+										// max: 'dataMax', //取最大值为最大刻度
+										boundaryGap: ['5%', '5%'],//留白大小，坐标轴两边留
+										min: function(value) {//取最小值向下取整为最小刻度
+											return 0;
+										},
+										max: function(value) {//取最大值向上取整为最大刻度
+											return  Math.ceil(value.max)+15
+										},
+										scale: true, //自适应
+										minInterval: 0.1, //分割刻度
+										axisLabel: {
+											formatter: '{value}°C/%',
+
+											textStyle: {
+												color: "#2EC7C9" //X轴文字颜色
+											}
+										},
+										axisLine: {
+											lineStyle: {
+												color: '#01FCE3'
+											},
+										},
+									},
+									{
+										type: 'value',
+										name: '含量/光照强度',
+										// min:0,  //取0为最小刻度
+										// max: 100, //取100为最大刻度
+										// min:'dataMin', //取最小值为最小刻度
+										// max: 'dataMax', //取最大值为最大刻度
+										min: function(value) {//取最小值向下取整为最小刻度
+											return Math.floor(value.min)-20
+										},
+										max: function(value) {//取最大值向上取整为最大刻度
+											return  Math.ceil(value.max)
+										},
+										scale: true, //自适应
+										minInterval: 0.1, //分割刻度
+										boundaryGap: ['5%', '5%'],//留白大小，坐标轴两边留
+										axisLabel: {
+											formatter: '{value} ppm/lx',
+
+											textStyle: {
+												color: "#2EC7C9" //X轴文字颜色
+											}
+										},
+										axisLine: {
+											lineStyle: {
+												color: '#01FCE3'
+											},
+										},
+									},
+								],
+								series: [
+
+									{
+										name: '湿度',
+										type: 'bar',
+										itemStyle: {
+											normal: {
+												barBorderRadius: 5,
+												color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+													offset: 0,
+													color: "#00FFE3"
+												},
+													{
+														offset: 1,
+														color: "#4693EC"
+													}
+												])
+											}
+										},
+										//TODO
+										data: _this.humDataList,
+									},
+									{
+										name: '温度',
+										type: 'bar',
+										itemStyle: {
+											normal: {
+												barBorderRadius: 5,
+												color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+													offset: 0,
+													color: "#C1B2EA"
+												},
+													{
+														offset: 1,
+														color: "#8362C6"
+													}
+												])
+											}
+										},
+										//TODO
+
+										data: _this.tempDataList
+									},
+									{
+										name: '光照',
+										type: 'line',
+										yAxisIndex: 1,
+										//TODO
+										data: _this.lightDataList,
+										lineStyle: {
+											normal: {
+												width: 5,
+												color: {
+													type: 'linear',
+
+													colorStops: [{
+														offset: 0,
+														color: '#AAF487' // 0% 处的颜色
+													},
+														{
+															offset: 0.4,
+															color: '#47D8BE' // 100% 处的颜色
+														}, {
+															offset: 1,
+															color: '#47D8BE' // 100% 处的颜色
+														}
+													],
+													globalCoord: false // 缺省为 false
+												},
+												shadowColor: 'rgba(71,216,190, 0.5)',
+												shadowBlur: 10,
+												shadowOffsetY: 7
+											}
+										},
+										itemStyle: {
+											normal: {
+												color: '#AAF487',
+												borderWidth: 10,
+												borderColor: "#AAF487"
+											}
+										},
+										smooth: true,
+									},
+									{
+										name: '氨气',
+										type: 'line',
+										yAxisIndex: 1,
+										//TODO
+										data: _this.nh3DataList,
+										lineStyle: {
+											normal: {
+												width: 5,
+												color: {
+													type: 'linear',
+
+													colorStops: [{
+														offset: 0,
+														color: '#aaaaff' // 0% 处的颜色
+													},
+														{
+															offset: 0.4,
+															color: '#aa55ff' // 100% 处的颜色
+														}, {
+															offset: 1,
+															color: '#aa00ff' // 100% 处的颜色
+														}
+													],
+													globalCoord: false // 缺省为 false
+												},
+												shadowColor: 'rgba(71,216,190, 0.5)',
+												shadowBlur: 10,
+												shadowOffsetY: 7
+											}
+										},
+										itemStyle: {
+											normal: {
+												color: '#aa55ff',
+												borderWidth: 10,
+												borderColor: "#aa55ff"
+											}
+										},
+										smooth: true,
+									},
+									{
+										name: 'TVOC',
+										type: 'line',
+										yAxisIndex: 1,
+										//TODO
+										data: _this.tvocDataList,
+										lineStyle: {
+											normal: {
+												width: 5,
+												color: {
+													type: 'linear',
+													colorStops: [{
+														offset: 0,
+														color: '#aaff7f' // 0% 处的颜色
+													},
+														{
+															offset: 0.4,
+															color: '#aaff00' // 100% 处的颜色
+														}, {
+															offset: 1,
+															color: '#00ff00' // 100% 处的颜色
+														}
+													],
+													globalCoord: false // 缺省为 false
+												},
+												shadowColor: 'rgba(71,216,190, 0.5)',
+												shadowBlur: 10,
+												shadowOffsetY: 7
+											}
+										},
+										itemStyle: {
+											normal: {
+												color: '#F7AD3E',
+												borderWidth: 10,
+												borderColor: "#F7AD3E"
+											}
+										},
+										smooth: true,
+									},
+									{
+										name: '二氧化碳',
+										type: 'line',
+										yAxisIndex: 1,
+										//TODO
+										data: _this.CO2DataList,
+										lineStyle: {
+											normal: {
+												width: 5,
+												color: {
+													type: 'linear',
+
+													colorStops: [{
+														offset: 0,
+														color: '#ffaaff' // 0% 处的颜色
+													},
+														{
+															offset: 0.4,
+															color: '#ff55ff' // 100% 处的颜色
+														}, {
+															offset: 1,
+															color: '#ff00ff' // 100% 处的颜色
+														}
+													],
+													globalCoord: false // 缺省为 false
+												},
+												shadowColor: 'rgba(71,216,190, 0.5)',
+												shadowBlur: 10,
+												shadowOffsetY: 7
+											}
+										},
+										itemStyle: {
+											normal: {
+												color: '#F7AD3E',
+												borderWidth: 10,
+												borderColor: "#F7AD3E"
+											}
+										},
+										smooth: true,
+									}
+								]
+							};
+
+							// 使用刚指定的配置项和数据显示图表。
+							myChart.setOption(option);
+							window.addEventListener("resize",function(){
+								myChart.resize();
+							});
+						},
+						ceshis1() {
+							var myChart = echarts.init(document.getElementById('chart2'));
+							/**
+							 * TODO
+							 */
+							var _this = this;
+							var ydata = [
+								{
+									name: '<=1个月',
+									value: _this.ageData.level1
+								},
+								{
+									name: '1~3个月',
+									value: _this.ageData.level2
+								},
+								{
+									name: '3~6个月',
+									value: _this.ageData.level3
+								},
+								{
+									name: '6~12个月',
+									value: _this.ageData.level4
+								},
+								{
+									name: '>=12个月',
+									value: _this.ageData.level5
+								},
+							];
+							var color = ["#8d7fec", "#5085f2", "#e75fc3", "#f87be2", "#f2719a"]
+							var xdata = [ '<=1个月', '1~3个月', '3~6个月','6~12个月','>=12个月' ];
+							option = {
+								color: color,
+								legend: {
+									orient: "vartical",
+									x: "left",
+									top: "center",
+									left: "53%",
+									bottom: "0%",
+									data: xdata,
+									itemWidth: 5,
+									itemHeight: 5,
+									textStyle: {
+										color: '#fff'
+									},
+									formatter: function(name) {
+										return '' + name
+									}
+								},
+								series: [{
+									type: 'pie',
+									clockwise: false, //饼图的扇区是否是顺时针排布
+									minAngle: 0, //最小的扇区角度（0 ~ 360）
+									radius: ["20%", "60%"],
+									center: ["30%", "45%"],
+									avoidLabelOverlap: false,
+									itemStyle: { //图形样式
+										normal: {
+											borderColor: '#ffffff',
+											borderWidth: 1,
+										},
+									},
+									label: {
+										normal: {
+											show: false,
+											position: 'center',
+											formatter: '{text|{b}}\n{c} ({d}%)',
+											rich: {
+												text: {
+													color: "#fff",
+													fontSize: 14,
+													align: 'center',
+													verticalAlign: 'middle',
+													padding: 8
+												},
+												value: {
+													color: "#8693F3",
+													fontSize: 24,
+													align: 'center',
+													verticalAlign: 'middle',
+												},
+											}
+										},
+										emphasis: {
+											show: true,
+											textStyle: {
+												fontSize: 24,
+											}
+										}
+									},
+									data: ydata
+								}]
+							};
+							myChart.setOption(option);
+
+							setTimeout(function() {
+								myChart.on('mouseover', function(params) {
+									if (params.name == ydata[0].name) {
+										myChart.dispatchAction({
+											type: 'highlight',
+											seriesIndex: 0,
+											dataIndex: 0
+										});
+									} else {
+										myChart.dispatchAction({
+											type: 'downplay',
+											seriesIndex: 0,
+											dataIndex: 0
+										});
+									}
+								});
+
+								myChart.on('mouseout', function(params) {
+									myChart.dispatchAction({
+										type: 'highlight',
+										seriesIndex: 0,
+										dataIndex: 0
+									});
+								});
+								myChart.dispatchAction({
+									type: 'highlight',
+									seriesIndex: 0,
+									dataIndex: 0
+								});
+							}, 1000);
+
+							// 使用刚指定的配置项和数据显示图表。
+							/*myChart.setOption(option);*/
+							window.addEventListener("resize",function(){
+								myChart.resize();
+							});
+						}
+
+					},
+				mounted(){
+					this.getData();
+					setInterval(this.getTime,1000);
+				}
+
+				})
+			    //顶部时间
+
+			</script>			
+	</body>
+</html>

@@ -8,12 +8,16 @@ body{
 #main{
 	  height: 100%;
 	  width: 100%;
+	  margin: 0;
+	  padding: 0%;
 	  
 }
 #top{
 	    display: -webkit-inline-box;
 		height: 50px;
 		width: 100%;
+		margin: 0;
+		padding: 0%;
 }
 .top-left {
 	    height: 65px;
@@ -21,35 +25,60 @@ body{
 	    background-image: url('../images/top-left.png');
 	    background-repeat: no-repeat;
 	    background-size: 100% 100%;
+		margin: 0;
+		padding: 0%;
 	}   
-.top-center{
-	    height: 65px;
-	    width: 50%;
+.navigation{
+	    height: 100%;
+		width: 100%;
 		display: -webkit-inline-box;
+}
+.control-box,.information-box{
+		height: 40px;
+		width: 30%;
+		margin: 0% 0% 5% 10%;
+	    background-image: url('../images/box.png');
+		background-repeat: no-repeat;
+		background-size: 100% 100%;
+		text-align: center;
+		line-height: 1px;
+		font-size: 120%;
+		text-shadow: 0 0 .3rem #00d8ff;
+}
+.top-center{
+	    height: 50px;
+	    width: 50%;
+		/* display: -webkit-inline-box; */
+		margin: 0;
+		padding: 0%;
 }
 .top-title{
 	   color: #ffffff;
 	   width: 100%;
-	   height: 100%;
-	   font-size: 230%;
+	   height: 50px;
+	   font-size: 240%;
 	   text-shadow: 0 0 .3rem #00d8ff;
-	   margin-left: 23%;
+	   text-align: center;
+	   margin-top: 0px;
+	   line-height: 1px;
 }
 .top-gif{   
 		background: url(../images/head.gif);
-		height: 100px;
+		height: 82px;
 		width: 50%;
 		position: absolute;
 		background-repeat: no-repeat;
 		background-size: 100% 200%;
+		margin: 0;
+		padding: 0%;
 }
 .top-right{
 	    height: 65px;
 	    width: 25%;
-		margin-left: 20.5%;
 		background-image: url('../images/top-right.png');
 		background-repeat: no-repeat;
 		background-size: 100% 100%;
+		padding: 0%;
 }
 #time{ 
 	   width: 100%;
@@ -70,17 +99,17 @@ body{
 }
 #center{
 	    display: -webkit-inline-box;
-	    height: 330px;
+	    height: 350px;
 	    width: 100%;
 }
 #bottom{
 	    display: -webkit-inline-box;
-	    height: 255px;
+	    height: 300px;
 	    width: 100%;
 
 }
-.center-left,.center-right {
-	    margin-left: 4%;
+.center-left {
+	    margin-left: 2%;
 		margin-top:4%;
 	    height: 75%;
 		width: 25%;
@@ -88,16 +117,31 @@ body{
 		background-repeat: no-repeat;
 		background-size: 100% 100%;
 }
-.bottom-left,.bottom-right{
-	    margin-left: 4%;
-		margin-top: 2%;
-	    height: 100%;
+.center-right {
+	    
+		margin-top:4%;
+	    height: 75%;
 		width: 25%;
 	    background-image: url('../images/cheek1.png');
 		background-repeat: no-repeat;
 		background-size: 100% 100%;
 }
-
+.bottom-right{
+	    margin-left: 2%;
+	    height: 380px;
+		width: 25%;
+	    background-image: url('../images/cheek1.png');
+		background-repeat: no-repeat;
+		background-size: 100% 100%;
+}
+.bottom-left{
+	    margin-left: 2%;
+	    height: 380px;
+		width: 25%;
+	    background-image: url('../images/cheek1.png');
+		background-repeat: no-repeat;
+		background-size: 100% 100%;
+}
 .center-center-titlebox{
 	    width: 60%;
 		height: 12%;
@@ -106,8 +150,8 @@ body{
 		margin-left: 20%;
 		display: -webkit-inline-box;
 }
-.center-left-titlebox,.center-right-titlebox,.bottom-left-titlebox,
-.bottom-center-titlebox,.bottom-right-titlebox{
+.center-left-titlebox,.center-right-titlebox,
+.bottom-center-titlebox{
 	    width: 60%;
 		height: 15%;
 		background-image: url('../images/title.png');
@@ -115,9 +159,17 @@ body{
 		margin-left: 20%;
 		display: -webkit-inline-box;
 }
+.bottom-left-titlebox,.bottom-right-titlebox{
+	    width: 60%;
+		height: 12%;
+		background-image: url('../images/title.png');
+		background-size: 100% 100%;
+		margin-left: 20%;
+		display: -webkit-inline-box;
+}
 .center-left-title,.center-center-title,
 .center-right-title,.bottom-left-title,
-.bottom-center-title{
+.bottom-center-title,.bottom-right-title{
 	    width: 100%;
 		height: 100%;
 		text-align: center;
@@ -128,73 +180,82 @@ body{
 		line-height: 1px;
 }
 .center-center{
-	    margin-left: 3.5%;
+	    margin-left: 2%;
+		margin-right: 2%;
 		height:100%;
-		width: 35%;
+		width: 42%;
 		background-image: url('../images/cheek1.png');
 		background-repeat: no-repeat;
 		background-size: 100% 100%;
 		margin-top: 1%;
 }
 .bottom-center{
-	    margin-left: 6%;
+	    margin-left: 5.5%;
 		margin-top: 2.5%;
-		margin-right: 2.5%;
+		margin-right: 3.5%;
 		height:100%;
-		width: 30%;
+		width: 35%;
 		background-image: url('../images/cheek1.png');
 		background-repeat: no-repeat;
 		background-size: 100% 100%;
 }
-
-.data,.navigation{
+.pricebox{
+		height: 90%;
+		width: 90%;
+		margin-left: 3%;
+}
+.pricep{
+		height: 90%;
+		width: 100%;
+}
+.pig-first,.pig-second,.pig-third{
+        height: 15%;
+		width: 100%;
+		display: -webkit-inline-box;
+		margin-left: 10%;
+		margin-top: 2%;
+		
+}
+.picturetext{
+	    height: 100%;
+		width: 30%;
+}
+.pigprice{
+		height: 100%;
+		width: 25%;
+		font-size: 180%;
+		line-height: 1px;
+		text-align: center;
+}
+.unit{
+		height: 100%;
+		width: 20%;
+}
+.trend{
+		height: 80%;
+		width: 20%;
+		font-size: 110%;
+		
+}
+.pricetext{
+		height: 8%;
+		width: 100%;
+		font-size: 120%;
+		text-align: center;
+		line-height: 1px;
+		text-shadow: 0 0 .3rem #00d8ff;
+}
+.data{
 	    height: 85%;
 		width: 100%;
 }
-.control,.information{
-	    height: 25%;
-		width: 100%;
-		margin-top: 8%;
-}
-.control-box,.information-box{
-		height: 100%;
-		width: 60%;
-		margin-left: 20%;
-		display: -webkit-inline-box;
-		background-image: url('../images/controlbox.png');
-		background-size: 100% 100%;
-}
-.control-picture{
-	    height: 90%;
-		margin:3.5% 1% 1% 10%;
-		width: 23%;
-		background-image: url("../images/control.png");
-		background-size: 80% 80%;
-		background-repeat: no-repeat;
-}
-.information-picture{
-	    height: 90%;
-		margin:3.5% 1% 1% 10%;
-		width: 23%;
-		background-image: url("../images/ininformation.png");
-		background-size: 80% 80%;
-		background-repeat: no-repeat;
-}
-.controltext{
-		height: 100%;
-		width: 100%;
-		font-size: 120%;
-		line-height: 1%;
-		margin-left: 15%;
-}
-.informationtext{
-		height: 100%;
-		width: 100%;
-		font-size: 120%;
-		line-height: 1%;
-}
 a{
 		text-decoration:none
+}
+.weather{
+	    height: 100%;
+		width: 100%;
+		margin-left: 13%;
 }
 .chart1box{
 		width: 100%;
@@ -208,19 +269,13 @@ a{
 	    margin:5% 5% 5% 8% ;
 		height: 80%;
 		width: 100%;
-		/* text-overflow: ellipsis;  /* ellipsis:显示省略符号来代表被修剪的文本  string:使用给定的字符串来代表被修剪的文本*/ 
-		white-space: nowrap;   /* nowrap:规定段落中的文本不进行换行   */ 
-		overflow: hidden; 
 }
 .warnbox{
 		height: 80%;
-		width: 100%;
+		width: 80%;
 		text-align: left;
 		text-shadow: 0 0 .3rem #00d8ff;
-		
-		-webkit-box-orient: vertical; /*  -webkit-box-orient 必须结合的属性 ，设置或检索伸缩盒对象的子元素的排列方式  */
-		-webkit-line-clamp: 4; /*  -webkit-line-clamp用来限制在一个块元素显示的文本的行数 */
-		overflow: hidden;
+		word-wrap:break-word
 }
 .first,.second,.third{
 	    height: 25%;
@@ -257,8 +312,8 @@ a{
 		margin-left: 5%;
 		margin-top: 2.5%;
 }
-.oxygen-picture{
-	    background-image: url("../images/oxygen.png");
+.CH4-picture{
+	    background-image: url("../images/TVOC.png");
 	    height: 100%;
 	    width: 30%;
 	    background-size: 80% 80%;
@@ -276,7 +331,7 @@ a{
 	    margin-top: 2.5%;
 }
 .H2S-picture{
-		background-image: url("../images/H2S.png");
+		background-image: url("../images/Light.png");
 		height: 100%;
 		width: 30%;
 		background-size: 80% 80%;
@@ -293,7 +348,7 @@ a{
 		margin-left: 5%;
 		margin-top: 2.5%;
 }
-.temperature,.water,.oxygen,.CO2,.H2S,.NH3{
+.temperature,.water,.CH4,.CO2,.H2S,.NH3{
 	    height: 100%;
 		width: 60%;
 		font-size: 120%;
@@ -306,4 +361,8 @@ a{
 	font-size: 55%;
 	line-height: 1px;
 	text-shadow: 0 0 .3rem #00d8ff;
+}
+.ring{
+	width: 140%;
+	height: 95%;
 }

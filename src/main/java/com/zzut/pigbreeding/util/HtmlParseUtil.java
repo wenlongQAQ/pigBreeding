@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class HtmlParseUtil {
@@ -44,6 +45,7 @@ public class HtmlParseUtil {
         PigPrice pigPrice1 = new PigPrice("外三元",Float.parseFloat(s1[3]),s3[0]);
         PigPrice pigPrice2 = new PigPrice("内三元",Float.parseFloat(s1[4]),s3[1]);
         PigPrice pigPrice3 = new PigPrice("土杂猪",Float.parseFloat(s1[5]),s3[2]);
+
 
         List<PigPrice> pigPrices = new ArrayList<>();
         pigPrices.add(pigPrice1);

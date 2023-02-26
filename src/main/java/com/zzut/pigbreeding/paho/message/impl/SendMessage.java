@@ -46,12 +46,12 @@ public class SendMessage implements IMessage {
             log.info("发布的信息为->"+topic + ":" + message);
             pahoClient.subscribe("testtopic/#");
             //断开连接
-            pahoClient.disconnect();
+
             // 关闭客户端
             return true;
         }else {
             pahoClient.subscribe("testtopic/#");
-            pahoClient.disconnect();
+
             // 关闭客户端
 
             throw new SendMessageException("此信息发送失败->"+content+"\n"+"topic->"+topic);

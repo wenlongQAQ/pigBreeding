@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -23,12 +24,17 @@ public class DeviceDataWarningController {
         lambdaQueryWrapper.eq(DeviceDataWarning::getStatus,1);
         return warningService.count(lambdaQueryWrapper);
     }
-//    @GetMapping("/getAllWarnings")
-//    public R getAllWarnings(){
-//        LambdaQueryWrapper<DeviceDataWarning> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-//        List<DeviceDataWarning> list = warningService.list(lambdaQueryWrapper);
-//        return new R<>().packing(list,"成功",1);
-//    }
+    @GetMapping("/getAllWarnings")
+    public R getAllWarnings(){
+        LambdaQueryWrapper<DeviceDataWarning> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(DeviceDataWarning::getStatus,1);
+        List<DeviceDataWarning> list = warningService.list(lambdaQueryWrapper);
+        ArrayList<String> arrayList = new ArrayList<>();
+        for (DeviceDataWarning deviceDataWarning : list) {
+            arrayList.add(deviceDataWarning.getDeviceName()+"在"+deviceDataWarning.getWarningTime()+"出现了异常数据:"+deviceDataWarning.getWarningData());
+        }
+        return new R<>().packing(arrayList,"成功",1);
+    }
     @DeleteMapping ()
     public R removeWarning(@RequestParam List<Long> ids){
         ids.forEach(System.out::println);

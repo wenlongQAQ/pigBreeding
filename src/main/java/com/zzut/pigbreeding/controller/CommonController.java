@@ -4,7 +4,9 @@ package com.zzut.pigbreeding.controller;
 
 
 import com.zzut.pigbreeding.common.R;
+import com.zzut.pigbreeding.pojo.PigPrice;
 import com.zzut.pigbreeding.pojo.weather.Lives;
+import com.zzut.pigbreeding.util.HtmlParseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -12,6 +14,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,6 +37,8 @@ import java.util.UUID;
 public class CommonController {
     @Value("${filepath}")
     private String path;
+    @Autowired
+    private HtmlParseUtil htmlParseUtil;
 
     @GetMapping("/getTodayWeather")
     public Lives getTodayWeather(){
@@ -91,5 +96,16 @@ public class CommonController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+    @GetMapping("/getPrice")
+    public R getPrice(){
+        List<PigPrice> pigPrice;
+        try {
+            pigPrice = htmlParseUtil.getPigPrice();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return new R<>().packing(pigPrice,"",1);
+
     }
 }

@@ -2,6 +2,9 @@ package com.zzut.pigbreeding;
 
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.zzut.pigbreeding.common.Code;
+import com.zzut.pigbreeding.common.R;
 import com.zzut.pigbreeding.paho.message.IMessage;
 import com.zzut.pigbreeding.paho.server.ConnectServer;
 import com.zzut.pigbreeding.pojo.OrderBatch;
@@ -10,8 +13,10 @@ import com.zzut.pigbreeding.pojo.device.Device;
 
 import com.zzut.pigbreeding.pojo.TestPojo;
 
+import com.zzut.pigbreeding.pojo.device.DeviceData;
 import com.zzut.pigbreeding.pojo.weather.Lives;
 import com.zzut.pigbreeding.pojo.weather.LivesDto;
+import com.zzut.pigbreeding.service.DeviceDataService;
 import com.zzut.pigbreeding.service.DeviceService;
 
 
@@ -147,5 +152,18 @@ class PigBreedingApplicationTests {
         System.out.println(c.format(date));
         orderBatch.setSuccessTime(new Date());
         orderBatchService.save(orderBatch);
+    }
+    @Autowired
+    private DeviceDataService deviceDataService;
+    @Test
+    void testaaa() throws IOException {
+        HtmlParseUtil htmlParseUtil1 = new HtmlParseUtil();
+        List<PigPrice> pigPrice = htmlParseUtil1.getPigPrice();
+        System.out.println(JSON.toJSONString(pigPrice));
+    }
+    @Test
+    void createData() throws MqttException {
+        for (int i = 0 ; i < (24 * 720);i++)
+            sendMessage.sendObjectMessage("testtopic/1111","{\"data\":17.8,\"name\":\"dht11_temp\",\"status\":1,\"type\":\"temp\"}",1);
     }
 }

@@ -26,13 +26,13 @@ public class DeviceDBUtil {
         lambdaQueryWrapper.eq(Device::getName,device.getName());
         Device one = deviceService.getOne(lambdaQueryWrapper);
         deviceData.setData(data);
-
-        System.out.println(checkData.checkWaringAndSave(one));
-
         deviceData.setDeviceName(deviceName);
         deviceData.setDeviceId(one.getId());
         deviceData.setType(type);
         deviceData.setDeviceStatus(one.getStatus());
         deviceDataService.save(deviceData);
+        System.out.println(checkData.checkWaringAndSave(one));
+
+
     }
 }

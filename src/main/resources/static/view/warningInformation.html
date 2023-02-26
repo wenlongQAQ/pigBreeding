@@ -3,24 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+  <script src="../assert/js/vue2.js"></script>
+
+  <script src="../assert/js/axios.js"></script>
+
+  <link rel="stylesheet" href="../assert/element-ui/lib/theme-chalk/index.css">
+
+  <script src="../assert/element-ui/lib/index.js"></script>
+  <script src="../js/warningData.js"></script>
+
+  <style>
+    .el-table, .el-table__expanded-cell{
+      background-color: transparent;
+    }
+    /* 表格内背景颜色 */
+    .el-table th,
+    .el-table tr,
+    .el-table td {
+      background-color: transparent;
+      color:white
+    }
+  </style>
 </head>
 
-<script src="../assert/js/vue2.js"></script>
-
-<script src="../assert/js/axios.js"></script>
-
-<link rel="stylesheet" href="../assert/element-ui/lib/theme-chalk/index.css">
-
-<script src="../assert/element-ui/lib/index.js"></script>
-<script src="../js/warningData.js"></script>
 
 
 <body>
 <div id="warningApp">
+  <el-button @click="deleteHandle('批量', null)" type="warning">批量删除</el-button>
+  <el-button  @click="initPage(0)" type="info">切换到已过期数据</el-button>
+  <el-button  @click="initPage(1)" type="primary">切换到当前数据</el-button>
   <template>
-    <el-button @click="deleteHandle('批量', null)" type="warning">批量删除</el-button>
-    <el-button  @click="initPage(0)" type="info">切换到已过期数据</el-button>
-    <el-button  @click="initPage(1)" type="primary">切换到当前数据</el-button>
     <el-table
             :data="warningTableData"
             border
@@ -54,6 +67,7 @@
         </template>
       </el-table-column>
     </el-table>
+
     <el-pagination
             class="pageList"
             :page-sizes="[10, 20, 30, 40]"

@@ -19,23 +19,22 @@
 <style>
 
     .el-header{
-        background-color: #B3C0D1;
         color: #333;
         /* line-height: 60px; */
         height: 60px;
-        background-image: url("../assert/image/标题横幅.png");
+        /*background-image: url("../images/head.png");*/
     }
     .el-footer {
-        background-color: #B3C0D1;
         color: #333;
         /* line-height: 60px; */
         height: 60px;
-        background-image: url("../assert/image/标题横幅.png");
+        /*background-image: url("../images/head.png");*/
     }
 
     .el-aside {
-        background-color: rgb(53, 167, 142);
+        /*background-color: rgb(53, 167, 142);*/
         color: #333;
+        background-color: transparent;
         height: auto;
     }
     .el-main {
@@ -51,9 +50,17 @@
         margin-top: 10px;
         margin-right: 40px;
     }
+    .bgimage{
+        background-image: url("./front/images/bg01.png");
+        background-size: 100%,100%;
+        background-repeat: no-repeat;
+    }
+    .el-menu{
+
+    }
 
 </style>
-<body style="height: 100%;">
+<body class="bgimage" style="height: 100%; width: 100%">
 
 <div id="app">
     <el-container style="height: 100%; ">
@@ -66,12 +73,11 @@
                         :default-active="2"
                         :unique-opened="false"
                         :collapse-transition="false"
-                        background-color="#343744"
+                        background-color="transparent"
                         text-color="#bfcbd9"
-                        active-text-color="#f4f4f5"
+
                 >
                     <div v-for="item in menuList" :key="item.id">
-
                         <el-menu-item  :index="item.id" @click="menuHandle(item,false)">
                             <i class="iconfont" :class="item.icon"></i>
                             <span slot="title">

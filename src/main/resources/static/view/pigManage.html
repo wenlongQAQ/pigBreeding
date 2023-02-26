@@ -12,6 +12,18 @@
     <script src="../assert/element-ui/lib/index.js"></script>
 </head>
 <style>
+
+    .el-table, .el-table__expanded-cell{
+        background-color: transparent;
+    }
+    /* 表格内背景颜色 */
+    .el-table th,
+    .el-table tr,
+    .el-table td {
+        background-color: transparent;
+        color:white
+    }
+
     .avatar-uploader .el-upload {
         border: 1px dashed #d9d9d9;
         border-radius: 6px;
@@ -44,7 +56,7 @@
     <el-table
             :data="tableData"
             border
-            style="width: 100%">
+            style="width: 100%;">
         <el-table-column
                 prop="updateTime"
                 label="最近一次更新时间"

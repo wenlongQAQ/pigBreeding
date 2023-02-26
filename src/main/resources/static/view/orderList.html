@@ -34,6 +34,16 @@
         height: 178px;
         display: block;
     }
+    .el-table, .el-table__expanded-cell{
+        background-color: transparent;
+    }
+    /* 表格内背景颜色 */
+    .el-table th,
+    .el-table tr,
+    .el-table td {
+        background-color: transparent;
+        color:white
+    }
 </style>
 <body>
 <div id="scheduledTaskApp">
@@ -60,12 +70,15 @@
                     </el-image>
                 </template>
             </el-table-column>
-            <el-table-column
-                    prop="successTime"
-                    label="订单成交时间"
-                    width="250"
-            >
-            </el-table-column>
+<!--            <el-table-column-->
+
+<!--                    label="订单成交时间"-->
+<!--                    width="250"-->
+<!--            >-->
+<!--                <template slot="scope" v-format="yyyy-MM-dd hh:mm:ss">-->
+<!--                    {{scope.success}}-->
+<!--                </template>-->
+<!--            </el-table-column>-->
             <el-table-column
                     prop="saveTime"
                     label="订单创建时间"
@@ -103,13 +116,13 @@
                 <el-input v-model.num="form.orderNum" autocomplete="off"></el-input>
             </el-form-item>
 
-            <el-form-item label="订单成交日期" :label-width="formLabelWidth">
-                <el-date-picker
-                        v-model="form.successTime"
-                        type="date"
-                        placeholder="请选择订单成交日期">
-                </el-date-picker>
-            </el-form-item>
+<!--            <el-form-item label="订单成交日期" :label-width="formLabelWidth">-->
+<!--                <el-date-picker-->
+<!--                        v-model="form.successTime"-->
+<!--                        type="date"-->
+<!--                        placeholder="请选择订单成交日期">-->
+<!--                </el-date-picker>-->
+<!--            </el-form-item>-->
 
             <el-form-item label="描述" :label-width="formLabelWidth">
                 <el-input type="textarea"  v-model="form.description" autocomplete="off"></el-input>

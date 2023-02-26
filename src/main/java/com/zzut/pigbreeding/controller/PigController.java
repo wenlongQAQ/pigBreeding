@@ -10,8 +10,7 @@ import com.zzut.pigbreeding.service.PigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/pig")
@@ -34,20 +33,7 @@ public class PigController {
         Page<Pig> page1 = pigService.page(pigPage);
         List<Pig> records = page1.getRecords();
         for (Pig record : records) {
-            Date birth = record.getBirth();
-            Date date = new Date();
-            if (birth!=null){
-                Long a= (date.getTime() - birth.getTime())/1000/60/60/24/30;
-                record.setAge(Math.toIntExact((a)));
-            }
-            else{
-                record.setAge(-1);
-            }
-            if (record.getOrderId()!=null){
-                record.setOrderNum(orderBatchService.getById(record.getOrderId()).getOrderNum());
-            }
-
-
+            record.calculatePigAge(orderBatchService);
         }
         return new R<>().packing(page1,"success",1);
     }
@@ -82,5 +68,51 @@ public class PigController {
         pigService.updateById(pig);
         return new R<>().packing("","success",1);
 
+    }
+
+    /**
+     *  <=1 1
+     *  1-3 2
+     *  3-6 3
+     *  6-12 4
+     *  >=12 5
+     * @return
+     */
+    @GetMapping("/ageList")
+    public R getPigAgeList(){
+        Integer level1 = 0;
+        Integer level2 = 0;
+        Integer level3 = 0;
+        Integer level4 = 0;
+        Integer level5 = 0;
+        for (Pig pig : pigService.list()) {
+            pig.calculatePigAge(orderBatchService);
+            if (pig.getAge() > 1){
+                if (pig.getAge()>3){
+                    if (pig.getAge()>6){
+                        if (pig.getAge()>=12){
+                            level5++;
+                        }else {
+                            level4++;
+                        }
+                    }else {
+                        level3++;
+                    }
+                }else {
+                    level2++;
+                }
+            }else {
+                level1++;
+            }
+        }
+
+        Map<String,Integer> result = new HashMap<>();
+        result.put("level1",level1);
+        result.put("level2",level2);
+        result.put("level3",level3);
+        result.put("level4",level4);
+        result.put("level5",level5);
+
+        return new R<>().packing(result,"成功",1);
     }
 }
