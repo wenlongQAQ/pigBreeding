@@ -19,11 +19,21 @@
     </properties>
 
     <dependencies>
+<!--        热部署相关-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-devtools</artifactId>
+                <optional>true</optional> <!-- 可以防止将devtools依赖传递到其他模块中 -->
+            </dependency>
+
+
+<!--    猪价获取 爬虫    -->
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>1.10.2</version>
         </dependency>
+<!--        对天气api模拟请求 -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>

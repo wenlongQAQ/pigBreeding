@@ -35,5 +35,10 @@ public class TestController {
         }
         return null;
     }
+    @GetMapping("/testHot")
+    public String testHot(){
+
+        return "456";
+    }
 
 }

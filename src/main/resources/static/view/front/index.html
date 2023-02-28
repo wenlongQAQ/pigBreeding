@@ -229,7 +229,7 @@
 									<div class="NH3">
 										<b><p class="chinese">氨气</p></b>
 									   <!-- TODO -->
-										<p>{{nh3}}ppm</p>
+<!--										<p>{{nh3}}ppm</p>-->
 									</div>
 						    </div>
 						</div>
@@ -300,68 +300,100 @@
 					methods: {
 						getData() {
 							var _this = this;
-							axios.get("/deviceData/getDataByType?type=" + 'temp').then(function (resp) {
-								_this.temp = resp.data.data.data;
-								axios.get("/deviceData/getRecentDataByType?type=" + 'temp').then(function (resp) {
-									for(let i =0; i<resp.data.data.length; i++){
-										_this.tempDataList.push(resp.data.data[i].data);
-										_this.ceshis();
-									}
-								})
-							})
-							axios.get("/deviceData/getDataByType?type=" + 'hum').then(function (resp) {
-								_this.hum = resp.data.data.data;
-								axios.get("/deviceData/getRecentDataByType?type=" + 'hum').then(function (resp) {
-									for(let i =0; i<resp.data.data.length; i++){
-										_this.humDataList.push(resp.data.data[i].data);
-									}
-								})
-							})
-							axios.get("/deviceData/getDataByType?type="+'CO2').then(function (resp) {
-								_this.co2 = resp.data.data.data;
-										axios.get("/deviceData/getRecentDataByType?type=" + 'CO2').then(function (resp) {
-											for(let i =0; i<resp.data.data.length; i++){
-												_this.CO2DataList.push(resp.data.data[i].data);
-											}
-										})
-							})
-							// axios.get("/deviceData/getDataByType?type="+'nh3').then(function (resp) {
-							// 	_this.nh3 = resp.data.data.data;
-							// axios.get("/deviceData/getRecentDataByType?type=" + 'CO2').then(function (resp) {
-							// 	for(let i =0; i<resp.data.data.length; i++){
-							// 		_this.nh3DataList.push(resp.data.data[i].data);
-							// 	}
-							// })
-							// })
-							axios.get("/deviceData/getDataByType?type="+'light').then(function (resp) {
-								_this.light = resp.data.data.data;
-								axios.get("/deviceData/getRecentDataByType?type=" + 'light').then(function (resp) {
-									for(let i =0; i<resp.data.data.length; i++){
-										_this.lightDataList.push(resp.data.data[i].data);
-									}
-								})
-							})
-							_this.ceshis();
-							axios.get("/deviceData/getDataByType?type="+'TVOC').then(function (resp) {
-								_this.tvoc = resp.data.data.data;
-								axios.get("/deviceData/getRecentDataByType?type=" + 'hum').then(function (resp) {
-									for(let i =0; i<resp.data.data.length; i++){
-										_this.tvocDataList.push(resp.data.data[i].data);
-										console.log(_this.humDataList);
-										console.log(resp.data.data[i].data);
-									}
-								})
-							})
+							_this.getCO2Data();
+							_this.getTVOCData();
+							_this.getTempData();
+							_this.getHumData();
+							_this.getLightData();
+							// _this.getNh3Data();
+
 
 							axios.get("/pig/ageList").then(function (resp) {
 								_this.ageData = resp.data.data;
-								_this.ceshis1();
+
 							})
 							axios.get("/warning/getAllWarnings").then(function (resp) {
 								_this.warningList = resp.data.data;
 							})
 							axios.get("/common/getPrice").then(function (resp) {
 								_this.price = resp.data.data;
+								_this.ceshis();
+								_this.ceshis1();
+							})
+
+
+
+
+						},
+						getTVOCData(){
+							let _this = this;
+							axios.get("/deviceData/getDataByType?type="+'TVOC').then(function (resp) {
+								_this.tvoc = resp.data.data.data;
+								axios.get("/deviceData/getRecentDataByType?type=" + 'hum').then(function (resp) {
+									for(let i =0; i<resp.data.data.length; i++){
+										_this.tvocDataList[i] = resp.data.data[i].data;
+									}
+								})
+							})
+						},
+						getLightData(){
+							var _this = this;
+							axios.get("/deviceData/getDataByType?type="+'light').then(function (resp) {
+								_this.light = resp.data.data.data;
+								axios.get("/deviceData/getRecentDataByType?type=" + 'light').then(function (resp) {
+									for(let i =0; i<resp.data.data.length; i++){
+										_this.lightDataList[i] = resp.data.data[i].data;
+										// _this.lightDataList.replace(resp.data.data[i].data);
+									}
+								})
+							})
+						},
+						getNh3Data(){
+							// let _this = this;
+							// axios.get("/deviceData/getDataByType?type="+'NH3').then(function (resp) {
+							// 	_this.nh3 = resp.data.data.data;
+							// axios.get("/deviceData/getRecentDataByType?type=" + 'NH3').then(function (resp) {
+							// 	for(let i =0; i<resp.data.data.length; i++){
+							// 		_this.lightDataList[i] = resp.data.data[i].data;
+							// 		_this.nh3DataList.replace(resp.data.data[i].data);
+							// 	}
+							// })
+							// })
+						},
+						getTempData(){
+							let _this = this;
+							axios.get("/deviceData/getDataByType?type=" + 'temp').then(function (resp) {
+								_this.temp = resp.data.data.data;
+								axios.get("/deviceData/getRecentDataByType?type=" + 'temp').then(function (resp) {
+									for(let i =0; i<resp.data.data.length; i++){
+										_this.tempDataList[i] = resp.data.data[i].data;
+										// _this.tempDataList.replace(resp.data.data[i].data);
+									}
+								})
+							})
+						},
+						getHumData(){
+							let _this = this;
+							axios.get("/deviceData/getDataByType?type=" + 'hum').then(function (resp) {
+								_this.hum = resp.data.data.data;
+								axios.get("/deviceData/getRecentDataByType?type=" + 'hum').then(function (resp) {
+									for(let i =0; i<resp.data.data.length; i++){
+										_this.humDataList[i] = resp.data.data[i].data;
+										// _this.humDataList.replace(resp.data.data[i].data);
+									}
+								})
+							})
+						},
+						getCO2Data(){
+							let _this = this;
+							axios.get("/deviceData/getDataByType?type="+'CO2').then(function (resp) {
+								_this.co2 = resp.data.data.data;
+								axios.get("/deviceData/getRecentDataByType?type=" + 'CO2').then(function (resp) {
+									for(let i =0; i<resp.data.data.length; i++){
+										_this.CO2DataList[i] = resp.data.data[i].data;
+										// _this.CO2DataList.replace(resp.data.data[i].data);
+									}
+								})
 							})
 						},
 						getTime() {
@@ -857,9 +889,14 @@
 						}
 
 					},
+
 				mounted(){
-					this.getData();
-					setInterval(this.getTime,1000);
+					//
+					var _this = this;
+					setInterval(function () {
+						_this.getData();
+					},3000);
+					setInterval(this.getTime(),1000);
 				}
 
 				})

@@ -231,6 +231,9 @@
         this.endCycleTime = 0;
       },
       initEcharts(){
+        if (this.cycle!= undefined) {
+          clearInterval(this.cycle);
+        }
         var dom = document.getElementById('lol');
         dom.style.display='';
         var myChart = echarts.init(dom);

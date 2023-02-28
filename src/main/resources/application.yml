@@ -10,6 +10,16 @@ spring:
   servlet:
     multipart:
       max-file-size: 10MB
+  banner:
+    charset: UTF-8
+    location: templates/myBanner.txt
+  devtools:
+    restart:
+      enabled: true
+      additional-paths: src/main/java
+      exclude: WEB-INF/**
+  thymeleaf:
+    cache: false
 
 
 
@@ -26,7 +36,6 @@ paho:
     clientId: "JavaClient" # 在客户端上显示的发送者的名称
   subTopic: "testtopic/#"
   pubTopic: "testtopic/12"
-
 device:
   type:
     temperature: "temperature"
@@ -38,7 +47,7 @@ safeData:
   ammoniaSulfide: "4-8"
 filepath: "D:\\smartFarming\\image\\"
 url:
-  pigPrice: https://zhujia.zhuwang.cc/areapriceinfo-440000.shtml  #"https://zhujia.zhuwang.cc/areapriceinfo-410000.shtml"
+  pigPrice: "https://zhujia.zhuwang.cc/areapriceinfo-410000.shtml"
   weather: "https://restapi.amap.com/v3/weather/weatherInfo"
 
 #mybatis-plus:

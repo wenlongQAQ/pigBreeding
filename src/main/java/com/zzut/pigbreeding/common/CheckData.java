@@ -32,6 +32,7 @@ public class CheckData {
             deviceDataWarning.setWarningData(data);
             deviceDataWarning.setWarningTime(LocalDateTime.now());
             deviceDataWarning.setDeviceName(device.getName());
+            deviceDataWarning.setStatus(1);
             deviceDataWarningService.save(deviceDataWarning);
         }
         return deviceDataWarning;

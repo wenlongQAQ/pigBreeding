@@ -17,10 +17,18 @@
 
 </head>
 <style>
+    .top-title{
+
+        color: #ffffff;
+        font-size: 250%;
+        text-shadow: 0 0 .3rem #00d8ff;
+
+        text-align: center;
+    }
 
     .el-header{
-        color: #333;
         /* line-height: 60px; */
+
         height: 60px;
         /*background-image: url("../images/head.png");*/
     }
@@ -63,9 +71,10 @@
 <body class="bgimage" style="height: 100%; width: 100%">
 
 <div id="app">
+
     <el-container style="height: 100%; ">
-        <el-header  style="text-align: center;" >
-            HELLO WORLD
+        <el-header  class="top-title" >
+            系统控制台
         </el-header >
         <el-container>
             <el-aside width="200px" style="height: 850px;">
@@ -140,6 +149,12 @@
                         name: '猪种溯源',
                         url: 'orderList.html',
                         icon: 'el-icon-view'
+                    },
+                    {
+                        id:'8',
+                        name: '大数据界面',
+                        url: 'front/index.html'
+
                     }
                     //   ],
                     // },
@@ -163,13 +178,17 @@
                 this.menuHandle(menu,false)
             },
             menuHandle(item, goBackFlag) {
-                console.log(item);
-                this.loading = true
-                this.menuActived = item.id
-                this.iframeUrl = item.url
-                this.headTitle = item.name
-                this.goBackFlag = goBackFlag
-                this.closeLoading()
+                if(item.id === '8')
+                    window.location.href = item.url;
+                else {
+                    this.loading = true
+                    this.menuActived = item.id
+                    this.iframeUrl = item.url
+                    this.headTitle = item.name
+                    this.goBackFlag = goBackFlag
+                    this.closeLoading()
+                }
+
             },
             closeLoading(){
                 this.timer = null
