@@ -51,7 +51,23 @@
 <body>
 
 <div id = "pigApp" >
-    <el-button  @click="dialogFormVisible = true" type="info">新增</el-button>
+
+    <el-row>
+        <el-col :span="2">
+            <el-button  @click="dialogFormVisible = true" type="info">新增</el-button>
+        </el-col>
+
+        <el-col :span="4">
+            <el-input
+                    placeholder="请输入订单号"
+                    v-model="orderNum">
+                <i slot="prefix" class="el-input__icon el-icon-search" @click="initPage(1)"></i>
+            </el-input>
+        </el-col>
+        <el-button  @click="initPageByType(0)" type="info">切换到已出栏猪</el-button>
+        <el-button  @click="initPageByType(1)" type="primary">切换到未出栏</el-button>
+    </el-row>
+
     <template>
     <el-table
             :data="tableData"
@@ -105,7 +121,7 @@
         <el-table-column
                 prop="description"
                 label="描述"
-                width="500">
+                width="300">
         </el-table-column>
 
         <el-table-column
@@ -113,7 +129,8 @@
                 width="130">
             <template slot-scope="scope">
                 <el-button type="text" size="small" @click="handlerEdit(scope.row.id)">编辑</el-button>
-                <el-button type="warning" size="small" @click="removePig(scope.row.id)">出栏</el-button>
+                <el-button v-if="scope.row.status" type="warning" size="small" @click="removePig(scope.row.id)">出栏</el-button>
+                <el-button v-else="scope.row.status" type="warning" size="small" @click="removePig(scope.row.id)">编辑订单号</el-button>
             </template>
         </el-table-column>
     </el-table>
@@ -203,7 +220,9 @@
                    birth:'',
                    description:'',
                    imageName:'',
+                    status:''
                 },
+                orderNum:'',
                 options:[],
                 removePigTable:[],
                 dialogFormVisible: false,
@@ -214,6 +233,7 @@
                 pageSize: 5, // 每页多少数据
                 formLabelWidth: "120px",
                 imageUrl: '',
+                pigStatus:'1',
 
             }
         },
@@ -254,12 +274,15 @@
                 })
                 _this.dialogFormVisible = true;
             },
-
-            removePig(id){
+            getOrderData(){
                 var _this = this;
                 axios.get("/order/getOrderNum").then(function (resp) {
                     _this.options = resp.data.data;
                 })
+            },
+            removePig(id){
+                this.getOrderData();
+                var _this = this;
                 _this.dialogRemovePig = true;
                 axios.get("/pig/getById?id="+id).then(function (resp){
                     _this.removePigTable = resp.data.data;
@@ -268,6 +291,7 @@
             },
             salePig(){
                 var _this = this;
+                _this.removePigTable.status = 0;
                 axios.put("/pig/sale",this.removePigTable).then(function (resp) {
                     _this.$message.info(resp.data.msg);
                     _this.dialogRemovePig = false;
@@ -278,18 +302,24 @@
             getImage (imageName) {
                 return '/common/download?name='+imageName
             },
+
+            //
+            initPageByType(status){
+                this.pigStatus = status;
+                this.initPage(status);
+            },
             initPage(status) {
                 var _this = this;
                 for(let i in _this.form){
                     _this.form[i] = "";
                 }
-                axios.get("/pig/page?page="+this.page+"&pageSize="+this.pageSize+"&status="+status).then(function (resp) {
+                axios.get("/pig/page?page="+this.page+"&pageSize="+this.pageSize+"&status="+this.pigStatus + "&orderNum=" + this.orderNum).then(function (resp) {
                     _this.tableData = resp.data.data.records || []
                     _this.counts = resp.data.data.total
-                    if (resp.data.code === 1)
-                        _this.$message.success(resp.data.msg)
-                    else
+                    if (resp.data.code != 1)
                         _this.$message.error("接口错误")
+
+
                 })
             },
             handleSizeChange (val) {

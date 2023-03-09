@@ -31,8 +31,8 @@
 <body>
 <div id="warningApp">
   <el-button @click="deleteHandle('批量', null)" type="warning">批量删除</el-button>
-  <el-button  @click="initPage(0)" type="info">切换到已过期数据</el-button>
-  <el-button  @click="initPage(1)" type="primary">切换到当前数据</el-button>
+  <el-button  @click="initPageByType(0)" type="info">切换到已过期数据</el-button>
+  <el-button  @click="initPageByType(1)" type="primary">切换到当前数据</el-button>
   <template>
     <el-table
             :data="warningTableData"
@@ -94,19 +94,15 @@
         counts: 0, // 总共多少数据
         page: 1,// 当前是多少页
         pageSize: 10, // 每页多少数据
+        warningStatus:'1'
       }
     },
     methods:{
-      // getAllWarnings(){
-      //   var _this = this;
-      //   axios.get("/warning/getAllWarnings").then(function (resp){
-      //     _this.warningTableData = resp.data.data;
-      //     if (resp.data.code === 1)
-      //       _this.$message.success(resp.data.msg)
-      //     else
-      //       _this.$message.error("接口错误")
-      //   })
-      // },
+      initPageByType(type){
+        this.warningStatus = type;
+        this.initPage();
+
+      },
       deleteHandle (type, id) {
         if (type === '批量' && id === null) {
           if (this.checkList.length === 0) {
@@ -137,9 +133,9 @@
         })
         this.checkList = checkArr
       },
-      initPage(status) {
+      initPage() {
         var _this = this;
-        axios.get("/warning/page?page="+this.page+"&pageSize="+this.pageSize+"&status="+status).then(function (resp) {
+        axios.get("/warning/page?page="+this.page+"&pageSize="+this.pageSize+"&status="+this.warningStatus).then(function (resp) {
           _this.warningTableData = resp.data.data.records || []
           _this.counts = resp.data.data.total
           if (resp.data.code === 1)
@@ -151,15 +147,15 @@
       },
       handleSizeChange (val) {
         this.pageSize = val
-        this.initPage(1)
+        this.initPage()
       },
       handleCurrentChange (val) {
         this.page = val
-        this.initPage(1)
+        this.initPage()
       }
     },
     created(){
-      this.initPage(1);
+      this.initPage();
     }
   })
 </script>

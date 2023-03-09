@@ -150,7 +150,6 @@ class PigBreedingApplicationTests {
         Date date = new Date();
         DateFormat c = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         System.out.println(c.format(date));
-        orderBatch.setSuccessTime(new Date());
         orderBatchService.save(orderBatch);
     }
     @Autowired

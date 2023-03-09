@@ -70,15 +70,14 @@
                     </el-image>
                 </template>
             </el-table-column>
-<!--            <el-table-column-->
-
-<!--                    label="订单成交时间"-->
-<!--                    width="250"-->
-<!--            >-->
-<!--                <template slot="scope" v-format="yyyy-MM-dd hh:mm:ss">-->
-<!--                    {{scope.success}}-->
-<!--                </template>-->
-<!--            </el-table-column>-->
+            <el-table-column
+                    label="订单成交时间"
+                    width="250"
+            >
+                <template slot-scope="scope">
+                   {{dateFormate(scope.row.successTime)}}
+                </template>
+            </el-table-column>
             <el-table-column
                     prop="saveTime"
                     label="订单创建时间"
@@ -116,13 +115,13 @@
                 <el-input v-model.num="form.orderNum" autocomplete="off"></el-input>
             </el-form-item>
 
-<!--            <el-form-item label="订单成交日期" :label-width="formLabelWidth">-->
-<!--                <el-date-picker-->
-<!--                        v-model="form.successTime"-->
-<!--                        type="date"-->
-<!--                        placeholder="请选择订单成交日期">-->
-<!--                </el-date-picker>-->
-<!--            </el-form-item>-->
+            <el-form-item label="订单成交日期" :label-width="formLabelWidth">
+                <el-date-picker
+                        v-model="form.successTime"
+                        type="date"
+                        placeholder="请选择订单成交日期">
+                </el-date-picker>
+            </el-form-item>
 
             <el-form-item label="描述" :label-width="formLabelWidth">
                 <el-input type="textarea"  v-model="form.description" autocomplete="off"></el-input>
@@ -245,8 +244,26 @@
               axios.get("/order/getById?id=" + id).then(function (resp) {
                   _this.form = resp.data.data;
               })
+          },
+          //日期格式化
+          // 格式化日期格式 1
+          dateFormate(value) {
+              let date = new Date(value);
+              let y = date.getFullYear();
+              let MM = date.getMonth() + 1;
+              MM = MM < 10 ? ('0' + MM) : MM;
+              let d = date.getDate();
+              d = d < 10 ? ('0' + d) : d;
+              let h = date.getHours();
+              h = h < 10 ? ('0' + h) : h;
+              let m = date.getMinutes();
+              m = m < 10 ? ('0' + m) : m;
+              let s = date.getSeconds();
+              s = s < 10 ? ('0' + s) : s;
+              return y + '-' + MM + '-' + d ;
           }
-      },
+
+  },
       created(){
           this.initPage(1);
       }

@@ -7,6 +7,7 @@ import com.zzut.pigbreeding.pojo.OrderBatch;
 import com.zzut.pigbreeding.pojo.Pig;
 import com.zzut.pigbreeding.service.OrderBatchService;
 import com.zzut.pigbreeding.service.PigService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/pig")
+@Slf4j
 public class PigController {
     @Autowired
     private PigService pigService;
@@ -28,15 +30,31 @@ public class PigController {
         }
     }
     @GetMapping("/page")
-    public R getAllPig(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize){
+    public R getAllPig(@RequestParam("page") Integer page, @RequestParam("pageSize") Integer pageSize,@RequestParam("status") Integer status, @RequestParam(value = "orderNum",required = false) String orderNum){
+        LambdaQueryWrapper<Pig> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(Pig::getStatus,status);
+        if (orderNum!=""){
+            log.info(orderNum);
+            OrderBatch one = orderBatchService.getOne(new LambdaQueryWrapper<OrderBatch>().eq(OrderBatch::getOrderNum, orderNum));
+            if (one!=null){
+                lambdaQueryWrapper.eq(Pig::getOrderId,one.getId());
+                log.info(one.getId().toString());
+            }else {
+                return new R<>().packing(new Page<>(),"success",1);
+            }
+        }
         Page<Pig> pigPage = new Page<>(page, pageSize);
-        Page<Pig> page1 = pigService.page(pigPage);
+        Page<Pig> page1 = pigService.page(pigPage,lambdaQueryWrapper);
         List<Pig> records = page1.getRecords();
+
         for (Pig record : records) {
             record.calculatePigAge(orderBatchService);
         }
         return new R<>().packing(page1,"success",1);
     }
+
+
+
     @DeleteMapping
     public R deletePig(@RequestParam("id") Long id){
         if (pigService.removeById(id)) {
@@ -47,6 +65,7 @@ public class PigController {
     }
     @PutMapping
     public R updatePigInformation(@RequestBody Pig pig){
+
        pigService.updateById(pig);
        return new R<>().packing("","success",1);
 

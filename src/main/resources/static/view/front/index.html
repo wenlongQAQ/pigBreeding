@@ -229,7 +229,7 @@
 									<div class="NH3">
 										<b><p class="chinese">氨气</p></b>
 									   <!-- TODO -->
-<!--										<p>{{nh3}}ppm</p>-->
+										<p>{{nh3}}ppm</p>
 									</div>
 						    </div>
 						</div>
@@ -305,7 +305,7 @@
 							_this.getTempData();
 							_this.getHumData();
 							_this.getLightData();
-							// _this.getNh3Data();
+							_this.getNh3Data();
 
 
 							axios.get("/pig/ageList").then(function (resp) {
@@ -349,16 +349,15 @@
 							})
 						},
 						getNh3Data(){
-							// let _this = this;
-							// axios.get("/deviceData/getDataByType?type="+'NH3').then(function (resp) {
-							// 	_this.nh3 = resp.data.data.data;
-							// axios.get("/deviceData/getRecentDataByType?type=" + 'NH3').then(function (resp) {
-							// 	for(let i =0; i<resp.data.data.length; i++){
-							// 		_this.lightDataList[i] = resp.data.data[i].data;
-							// 		_this.nh3DataList.replace(resp.data.data[i].data);
-							// 	}
-							// })
-							// })
+							let _this = this;
+							axios.get("/deviceData/getDataByType?type="+'NH3').then(function (resp) {
+								_this.nh3 = resp.data.data.data;
+							axios.get("/deviceData/getRecentDataByType?type=" + 'NH3').then(function (resp) {
+								for(let i =0; i<resp.data.data.length; i++){
+									_this.nh3DataList[i] = resp.data.data[i].data;
+								}
+							})
+							})
 						},
 						getTempData(){
 							let _this = this;
@@ -893,15 +892,20 @@
 				mounted(){
 					//
 					var _this = this;
+					_this.getData();
 					setInterval(function () {
 						_this.getData();
-					},3000);
-					setInterval(this.getTime(),1000);
+						_this.ceshis();
+					},10000);
+					setInterval(function () {
+						_this.getTime();
+					},1000);
+
 				}
 
 				})
 			    //顶部时间
+			</script>
 
-			</script>			
 	</body>
 </html>

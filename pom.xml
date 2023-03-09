@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.zzut</groupId>
     <artifactId>pigBreeding</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0-RELEASE</version>
     <name>pigBreeding</name>
     <description>pigBreeding</description>
 

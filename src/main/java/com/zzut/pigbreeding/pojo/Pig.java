@@ -33,6 +33,7 @@ public class Pig {
     private String description;
     //猪照片的名称
     private String imageName;
+    private Integer status;
 
     public void calculatePigAge(OrderBatchService orderBatchService){
 

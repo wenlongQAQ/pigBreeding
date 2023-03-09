@@ -31,9 +31,7 @@
 <template>
 
   <el-table
-          ref="filterTable"
-          :data="tableData"
-          style="width: 100%;height: 100%">
+          :data="tableData">
     <el-table-column
             prop="device.saveTime"
             label="最近通信时间"
@@ -84,9 +82,7 @@
             width="200"
           >
     </el-table-column>
-
     <el-table-column
-            fixed="right"
             label="操作"
             width="200">
       <template slot-scope="scope">
@@ -126,7 +122,7 @@
   <el-dialog title="设备信息" :visible.sync="editDialogVisible">
     <el-form :model="editFormData">
       <el-form-item label="传感器名称" :label-width="formLabelWidth">
-        <el-input v-model="editFormData.device.name" autocomplete="off"></el-input>
+        <el-input v-model="editFormData.device.name" autocomplete="off" disabled></el-input>
       </el-form-item>
       <el-form-item label="传感器状态" :label-width="formLabelWidth">
         <el-select v-model="editFormData.device.status" placeholder="请选择活动区域">
